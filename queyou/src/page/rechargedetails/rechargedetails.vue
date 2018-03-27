@@ -20,6 +20,7 @@
       <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
           <el-input type="reset" class="searchRest" value='重置'></el-input>
+          <el-button style="margin-left:20px;" @click="toexcel" type="danger">开启excel功能</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -102,6 +103,8 @@
       :total="pageSize">
     </el-pagination>
   </div>
+  <iframe :src="eurl" v-show="toexcelshow" class="toex"></iframe>
+  <div class="bord" v-show="toexcelshow" @click="tobord"></div>
   </div>
 </template>
 
@@ -112,6 +115,10 @@ export default {
   name: 'rechargeDetails',
   data () {
     return {
+        sTime:null,
+        eTime:null,
+        toexcelshow:false,
+        eurl:null,
         pick1:false,
         pick2:false,
         lvs:0,
@@ -129,10 +136,40 @@ export default {
         },
         tableData: [],
         currentPage1:1,
-        pageSize:0
+        pageSize:0,
+        toexcelTime1:null,
+        toexcelTime2:null
     }
   },
     methods: {
+      tobord:function () {
+        var self=this;
+        self.toexcelshow=!self.toexcelshow;
+      },
+      toexcel:function () {
+        var self=this;
+        self.toexcelshow=!self.toexcelshow;
+        var channels=null;
+        var cids=null;
+        console.log(11221)
+        var arr=location.search.replace(/\?/g,'').split('&');
+        arr.forEach(function (item,index) {
+                if (item.indexOf('uid=')!=-1) {
+                //uid=item.substring(item.indexOf('=')+1);
+            //  self.uid=item.substring(item.indexOf('=')+1);
+                    }
+                    if (item.indexOf('cid=')!=-1) {
+                        cids=item.substring(item.indexOf('=')+1)
+                    }
+                    if (item.indexOf('channel=')!=-1) {
+                        channels=item.substring(item.indexOf('=')+1)
+                        if (item.indexOf('cid=')!=-1) {
+                            channels='hz';
+                        }
+                    }
+                });//通用取uid，cidchannelvar player = new SVGA.Player('#demoCanvas');
+          self.eurl="http://monkey.queyoujia.com/html/toexcel?cid="+cids+'&channel='+channels+"&startTime="+self.toexcelTime1+"&endTime="+self.toexcelTime2+"&weburl=\/rebate\/rechargeExcel&random="+Math.random();//"http://www.baidu.com"//
+      },
       onSubmit() {
         var self=this;
         self.pick1=false;
@@ -177,18 +214,20 @@ export default {
          self.tableData=[]
          var tableTemp=[];
          function timeChangetype(stringTime1,stringTime2){
-             var time={timestamp1:0,timestamp2:0} 
-             time.timestamp1 = Date.parse(stringTime1); 
-             time.timestamp2 = Date.parse(stringTime2); 
-             return time;  
+             var time={timestamp1:0,timestamp2:0}
+             time.timestamp1 = Number(Date.parse(stringTime1)/1000);
+             time.timestamp2 = Number(Date.parse(stringTime2)/1000)+86399;
+             return time;
             }
             var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);
             var params={
                       startTime:picktime.timestamp1,
                       endTime:picktime.timestamp2,
                       page:val,
-                      
+
                 }
+                self.sTime=picktime.timestamp1;
+                self.eTime=picktime.timestamp2;
                 axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                       }}).then(function (res) {
@@ -214,14 +253,16 @@ export default {
               //console.log(self.tableData)
               var tableTemp=[];
               var endTime=new Date();
-              endTime=endTime.setHours('00', '00', '00', '0');
-              var startTime=endTime-86400000*365;
+              endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+              var startTime=endTime-86400*365+1;
               var params={
                 startTime:startTime,
                 endTime:endTime,
                 page:val,
-                
+
               }
+              self.sTime=startTime;
+              self.eTime=endTime;
               //console.log(endTime);
               axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
                                   'Content-Type': 'application/x-www-form-urlencoded'
@@ -241,7 +282,7 @@ export default {
                 console.log(err);
               });
               return;
-           
+
             }
              if (self.lvs==3) {
                function getCountDays() {
@@ -258,15 +299,17 @@ export default {
                 self.tableData=[]
                 var tableTemp=[];
                 var endTime=new Date();
-                endTime=endTime.setHours('00', '00', '00', '0');
-                var startTime=endTime-(86400000*getCountDays());
+                endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                var startTime=endTime-(86400*getCountDays())+1;
                 console.log(startTime)
                 var params={
                   startTime:startTime,
                   endTime:endTime,
                   page:val,
-                
+
                 }
+                self.sTime=startTime;
+                self.eTime=endTime;
                 //console.log(endTime-startTime);
                 //console.log(endTime);
                 axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
@@ -291,14 +334,16 @@ export default {
                 self.tableData=[]
                 var tableTemp=[];
                 var endTime=new Date();
-                endTime=endTime.setHours('00', '00', '00', '0');
-                var startTime=endTime-86400000*7;
+                endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                var startTime=endTime-864000*7+1;
                 var params={
                   startTime:startTime,
                   endTime:endTime,
                   page:val,
-                
+
                 }
+                self.sTime=startTime;
+                self.eTime=endTime;
                 //console.log(endTime);
                 axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
                                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -325,15 +370,17 @@ export default {
                   self.tableData=[]
                   var tableTemp=[];
                   var endTime=new Date();
-                  endTime=endTime.setHours('00', '00', '00', '0');
-                  var startTime=endTime-86400000;
+                  endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                  var startTime=endTime-86400+1;
                   console.log(endTime);
                   var params={
                     startTime:startTime,
                     endTime:endTime,
                     page:val,
-                
+
                   }
+                  self.sTime=startTime;
+                  self.eTime=endTime;
                   axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
                                       'Content-Type': 'application/x-www-form-urlencoded'
                                 }}).then(function (res) {
@@ -352,15 +399,17 @@ export default {
                     console.log(err);
                   })
               }
-         
+
          }
          else{
+           console.log('meidomngxi')
             self.tableData=[]
             var tableTemp=[];
             val=val.toString();
             var params={
               page:val,
-              
+              startTime:self.sTime,
+              endTime:self.eTime
             }
             //console.log(typeof(val));
             axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
@@ -377,7 +426,7 @@ export default {
 
         }).catch(function (err) {
           console.log(err);
-        }) 
+        })
          }
       },
      yesterDay:function () {
@@ -390,13 +439,15 @@ export default {
         self.tableData=[]
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-86400000;
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400+1;
         console.log(endTime);
         var params={
           startTime:startTime,
           endTime:endTime
         }
+        self.toexcelTime1=startTime;
+        self.toexcelTime2=endTime;
         axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                       }}).then(function (res) {
@@ -425,12 +476,14 @@ export default {
         self.tableData=[]
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-86400000*7;
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400*7+1;
         var params={
           startTime:startTime,
           endTime:endTime
         }
+        self.toexcelTime1=startTime;
+        self.toexcelTime2=endTime;
         //console.log(endTime);
         axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
@@ -470,12 +523,14 @@ export default {
         self.tableData=[]
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-86400000*getCountDays();
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400*getCountDays()+1;
         var params={
           startTime:startTime,
           endTime:endTime
         }
+        self.toexcelTime1=startTime;
+        self.toexcelTime2=endTime;
         //console.log(endTime-startTime);
         //console.log(endTime);
         axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
@@ -503,12 +558,14 @@ export default {
         //console.log(self.tableData)
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-86400000*365;
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400*365+1;
         var params={
           startTime:startTime,
           endTime:endTime
         }
+        self.toexcelTime1=startTime;
+        self.toexcelTime2=endTime;
         //console.log(endTime);
         axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
@@ -536,19 +593,22 @@ export default {
          self.tableData=[]
          var tableTemp=[];
          function timeChangetype(stringTime1,stringTime2){
-             var time={timestamp1:0,timestamp2:0} 
-             time.timestamp1 = Date.parse(stringTime1); 
-             time.timestamp2 = Date.parse(stringTime2); 
-             return time;  
+             var time={timestamp1:0,timestamp2:0}
+             time.timestamp1 = Number(Date.parse(stringTime1)/1000);
+             time.timestamp2 = Number(Date.parse(stringTime2)/1000)+86399;
+             return time;
             }
-        var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);  
+
+        var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);
         if (picktime.timestamp1&&picktime.timestamp2) {
           if (picktime.timestamp2-picktime.timestamp1>0) {
                 var params={
                   startTime:picktime.timestamp1,
                   endTime:picktime.timestamp2,
-                
+
                 }
+                self.toexcelTime1=startTime;
+                self.toexcelTime2=endTime;
                 axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                       }}).then(function (res) {
@@ -573,9 +633,9 @@ export default {
                 type: 'warning'
             });
             }
-            
+
           }
-        else{ 
+        else{
            return;
         }
       },
@@ -587,19 +647,21 @@ export default {
         self.tableData=[]
         var tableTemp=[];
          function timeChangetype(stringTime1,stringTime2){
-             var time={timestamp1:0,timestamp2:0} 
-             time.timestamp1 = Date.parse(stringTime1); 
-             time.timestamp2 = Date.parse(stringTime2); 
-             return time;  
-            }  
+             var time={timestamp1:0,timestamp2:0}
+             time.timestamp1 = Number(Date.parse(stringTime1)/1000);
+             time.timestamp2 = Number(Date.parse(stringTime2)/1000)+86399;
+             return time;
+            }
         var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);
         if (picktime.timestamp1&&picktime.timestamp2) {
             if (picktime.timestamp2-picktime.timestamp1>0) {
               var params={
                   startTime:picktime.timestamp1,
                   endTime:picktime.timestamp2,
-                
+
                 }
+                self.toexcelTime1=picktime.timestamp1;
+                self.toexcelTime2=picktime.timestamp2;
                 axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                       }}).then(function (res) {
@@ -624,7 +686,7 @@ export default {
                 type: 'warning'
             });
             }
-            
+
           }
           else{
             return;
@@ -634,7 +696,7 @@ export default {
     computed:{
       key(){
          /*this.pageSize=this.tableData.length;*/
-       }     
+       }
     },
     watch:{
 
@@ -647,7 +709,7 @@ export default {
         var params={
            uid:this.searchform.user,
            orderId:this.searchform.region,
-                
+
         }
         axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
@@ -699,4 +761,6 @@ a {
 .formSearch{margin-top: -10px;}
 .searchRest{width:60px;height: 36px;margin-left: 10px;}
 .pagetag{/* position: absolute;bottom: 5px;right: 15px; */float: right;}
+.toex{width: 80vw;height: 30vh;position: fixed;top:0;left: 0;bottom: 0;right: 0;margin: auto;z-index: 7}
+.bord{width: 100vw;height: 100vh;position: fixed;top:0;left: 0;bottom: 0;right: 0;margin: auto;background: black;opacity: 0.6;z-index: 6;}
 </style>

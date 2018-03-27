@@ -8,10 +8,10 @@
         </el-col>
         <el-col :span="2" class="addbtn">
           <el-button type="info" @click="searchIfo">查询</el-button>
-        </el-col> 
+        </el-col>
         <el-col :span="1">
           <el-button type="primary" @click="addAdminstor">添加管理员</el-button>
-        </el-col>      
+        </el-col>
       </el-row>
      <el-table
      class="etable"
@@ -112,7 +112,7 @@
       </el-col>
        <el-col :span="1" style="margin-left:2vw;">
        <el-button type="primary" @click="searchHHR">查询</el-button>
-      </el-col> 
+      </el-col>
        <el-col :span="2" style="margin-left:1vw;">
        <el-button type="danger" @click="addHHR">添加合伙人</el-button>
       </el-col>
@@ -168,6 +168,7 @@
 <div class="modalbor" @click="modalClose" v-show='modalshow'></div>
 <div class="modalmessage" v-show='modalshow' v-bind:style="{height:modalHeight}">
   <header class="modalhead">{{deitsth}}</header>
+
   <el-form :label-position="labelPosition" label-width="90px" :model="formLabelAlign">
     <el-col :span="22">
       <el-form-item label="姓名">
@@ -188,88 +189,39 @@
         <el-input v-model="formLabelAlign.company" placeholder="请输入公司名称"></el-input>
       </el-form-item>
     </el-col>
+
     <el-col :span="22">
-      <el-form-item label="角色" prop="region2">
-      <el-select v-model="formLabelAlign.region2" placeholder="请选择角色属性" @change="actiontype">
-        <el-option v-for="role in rolechose" :label="role.name" :value="role.id" :key="role.id"></el-option>
+      <el-form-item label="角色" prop="region2" >
+      <el-select v-model="cosChose"  placeholder="请选择角色属性" @change="actiontype">
+        <el-option v-for="role in options_new" :label="role.name" style="display:block;" :value="role.id" :key="role.id"></el-option>
         <el-option label="超级管理员" value="-6"></el-option>
       </el-select>
       </el-form-item>
     </el-col>
-    <el-col :span='22'>
-       <el-form-item label="渠道" prop="resource">
-        <el-checkbox-group v-model="formLabelAlign.resource" @change="channel">
-          <!-- <el-checkbox label="1" name="resource">杭州</el-checkbox>
-          <el-checkbox label="2" name="resource">富阳</el-checkbox>
-          <el-checkbox label="3" name="resource">全国</el-checkbox> -->
-          <el-checkbox :label="chanl.id" v-for="chanl in channelarr" :name="chanl.chars" :checked="chanl.checked" :key="chanl.id">{{chanl.chars}}</el-checkbox>
-        </el-checkbox-group>
-       </el-form-item>
-    </el-col>
-    
-    <div v-show="cns1">
-    <el-col :span="22">
-      <el-form-item label="游戏ID" :rules="[
-        { required: true, message: '游戏ID不能为空', trigger: 'blur' },
-        { min:'11',max:'11', message: '请输入正确的游戏ID', trigger: 'blur,change' }
-      ]">
-            <el-input v-model="formLabelAlign.uid" type='number' placeholder="请输入大冶棋牌游戏ID" @change="inputId(1)"></el-input>
-          </el-form-item>
-    </el-col>
-     <el-col :span="22">
-      <el-form-item label="检验id">
-        <el-input v-model="formLabelAlign.checkid" placeholder="待检查..." disabled class="textclass"></el-input>
-      </el-form-item>
-    </el-col>
-    </div>
 
-    <div v-show="cns2">
-    <el-col :span="22">
-      <el-form-item label="游戏ID" :rules="[
-        { required: true, message: '游戏ID不能为空', trigger: 'blur' },
-        { min:'11',max:'11', message: '请输入正确的游戏ID', trigger: 'blur,change' }
-      ]">
-            <el-input v-model="formLabelAlign.uid2" type='number' placeholder="请输入八道雀神游戏ID" @change="inputId(2)"></el-input>
-      </el-form-item>
-    </el-col>
-     <el-col :span="22">
-      <el-form-item label="检验id">
-        <el-input v-model="formLabelAlign.checkid2" placeholder="待检查..." disabled class="textclass"></el-input>
-      </el-form-item>
-    </el-col>
+
+    <template>
+      <el-col :span='22' :offset="2" style="margin-bottom:15px;">
+      <el-checkbox-group v-model="checkList" @change="current_change">
+        <label class="el-form-item__label" style="display: inline-block;height: 20px;line-height: 20px;padding: 0 13px 0 2px;">渠道</label>
+        <el-checkbox :label="item.id" v-for="item in channelarr" :key="item.id">{{item.chars}}</el-checkbox>
+      </el-checkbox-group>
+      </el-col>
+    </template>
+
+    <template>
+    <div v-for="(item,index) in channelarr"  v-if="item.checked==true" ref="checkChannel" :data-channels='JSON.stringify(item)' :key='item.id'>
+      <el-col :span="17">
+        <el-form-item label="游戏ID">
+              <el-input v-model="item.uid" type='number' :placeholder="'请输入'+item.name+'游戏ID'" ></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="4" :offset='1'>
+        <el-button type="primary" @click="channel_new(item.uid,item.id)">检查</el-button>
+      </el-col>
     </div>
-    
-    <div v-show="cns3">
-    <el-col :span="22">
-      <el-form-item label="游戏ID" :rules="[
-        { required: true, message: '游戏ID不能为空', trigger: 'blur' },
-        { min:'11',max:'11', message: '请输入正确的游戏ID', trigger: 'blur,change' }
-      ]">
-            <el-input v-model="formLabelAlign.uid3" type='number' placeholder="请输入决战绍兴游戏ID" @change="inputId(3)"></el-input>
-          </el-form-item>
-    </el-col>
-     <el-col :span="22">
-      <el-form-item label="检验id">
-        <el-input v-model="formLabelAlign.checkid3" placeholder="待检查..." disabled class="textclass"></el-input>
-      </el-form-item>
-    </el-col>
-    </div>
-    
-    <div v-show="cns4">
-    <el-col :span="22">
-      <el-form-item label="游戏ID" :rules="[
-        { required: true, message: '游戏ID不能为空', trigger: 'blur' },
-        { min:'11',max:'11', message: '请输入正确的游戏ID', trigger: 'blur,change' }
-      ]">
-            <el-input v-model="formLabelAlign.uid4" type='number' placeholder="请输入新-全民十三水游戏ID" @change="inputId(4)"></el-input>
-          </el-form-item>
-    </el-col>
-     <el-col :span="22">
-      <el-form-item label="检验id">
-        <el-input v-model="formLabelAlign.checkid4" placeholder="待检查..." disabled class="textclass"></el-input>
-      </el-form-item>
-    </el-col>
-    </div>
+    </template>
+
 
     <el-col :span="22">
       <el-form-item label="类型" prop="klType">
@@ -295,31 +247,31 @@
        </el-form-item>
        <el-form-item label="UV">
           <el-input v-model="formLabelAlign.uv" type='number' placeholder="请输入0-1之间，需扣量60%即输入0.4"></el-input>
-       </el-form-item> 
+       </el-form-item>
        <el-form-item label="PV">
           <el-input v-model="formLabelAlign.pv" type='number' placeholder="请输入0-1之间，需扣量60%即输入0.4"></el-input>
-       </el-form-item> 
+       </el-form-item>
        <el-form-item label="IP数">
           <el-input v-model="formLabelAlign.ip" type='number' placeholder="请输入0-1之间，需扣量60%即输入0.4"></el-input>
        </el-form-item>
        <el-form-item label="充值人数">
           <el-input v-model="formLabelAlign.recharge" type='number' placeholder="请输入0-1之间，需扣量60%即输入0.4"></el-input>
-       </el-form-item> 
+       </el-form-item>
        <el-form-item label="首冲人数">
           <el-input v-model="formLabelAlign.firstrecharge" type='number' placeholder="请输入0-1之间，需扣量60%即输入0.4"></el-input>
        </el-form-item>
        <el-form-item label="总充值">
           <el-input v-model="formLabelAlign.allrecharge" type='number' placeholder="请输入0-1之间，需扣量60%即输入0.4"></el-input>
-       </el-form-item> 
+       </el-form-item>
        <el-form-item label="消费人数">
           <el-input v-model="formLabelAlign.consumer" type='number' placeholder="请输入0-1之间，需扣量60%即输入0.4"></el-input>
        </el-form-item>
        <el-form-item label="消费钻石">
           <el-input v-model="formLabelAlign.diamond" type='number' placeholder="请输入0-1之间，需扣量60%即输入0.4"></el-input>
-       </el-form-item> 
+       </el-form-item>
        <el-form-item label="消费金额">
           <el-input v-model="formLabelAlign.consumermoney" type='number' placeholder="请输入0-1之间，需扣量60%即输入0.4"></el-input>
-       </el-form-item>    
+       </el-form-item>
     </el-col>
     <el-col :span="22">
       <el-form-item style="float:right">
@@ -333,37 +285,44 @@
 <div class="coscon" v-show="cosbor">
   <header>{{cosheader}}</header>
   <el-form ref="form6" :model="form6" label-width="80px">
-  <el-form-item label="角色名称" class="fromname">
+
+  <el-form-item label="角色名称" class="fromname" style="margin-bottom:10px;">
     <el-input v-model="form6.name"></el-input>
   </el-form-item>
-  <el-col :span="22" :offset="1">
+  <el-col :span="11" :offset="1">
   <el-form-item label="导航分配">
-    <el-checkbox-group v-model="form6.type1"><!-- v-model="form6.type"-->
-      <el-col style="color:red">老后台菜单</el-col>
-
-      <el-checkbox  v-for="menucheck1 in menutable1" :label="menucheck1.id" @change="check_it(menucheck1.id)" :checked="menucheck1.checked" :name="menucheck1.name"  :key="menucheck1.id">{{menucheck1.name}}</el-checkbox>
-      </el-checkbox-group>
-      <hr>
-      <el-checkbox-group v-model="form6.type2"><!-- v-model="form6.type"-->
-        <el-col style="color:red">新后台菜单</el-col>
-        <el-checkbox  v-for="menucheck2 in menutable2" :label="menucheck2.id" :checked="menucheck2.checked" @change="check_it(menucheck2.id)" :name="menucheck2.name"  :key="menucheck2.id">{{menucheck2.name}}</el-checkbox>
-      <hr>
-        </el-checkbox-group>
+    <el-tree
+      style="height:60vh;overflow:scroll;"
+      :data="data2"
+      show-checkbox
+      @check-change="ckchange_nav"
+      node-key="id"
+      ref="tree1"
+      highlight-current
+      :props="defaultProps">
+    </el-tree>
   </el-form-item>
   </el-col>
-  <el-col :span="22" :offset="1">
+  <el-col :span="10" :offset="1">
   <el-form-item label="权限分配">
-    <el-checkbox-group v-model="form7.type">
-      <el-checkbox :label="operate.id" :name="operate.name" v-for="operate in operatetable" :checked="operate.checked" :key="operate.id">{{operate.name}}</el-checkbox>
-
-      <hr>
-    </el-checkbox-group>
+    <el-tree
+      style="height:60vh;overflow:scroll;"
+      :data="data3"
+      show-checkbox
+      @check-change="ckchange_ope"
+      node-key="id"
+      ref="tree2"
+      highlight-current
+      :props="defaultProps">
+    </el-tree>
   </el-form-item>
   </el-col>
+  <el-col :span="23" :offset="1">
   <el-form-item>
     <el-button type="primary" @click="onSubmit6">立即创建</el-button>
     <el-button @click="cosshow">取消</el-button>
   </el-form-item>
+</el-col>
 </el-form>
 </div>
 <!-- <el-button class="deluser" type="danger">删除</el-button> -->
@@ -377,6 +336,16 @@ export default {
   name: 'privilege',
   data () {
     return {
+      tempnickname:[null,null,null,null,null,null,null,null,null,null,null,null],
+      cosChose:null,
+      options_new:[],
+      value_new:null,
+      checkList: [],
+      arr1:[],
+      arr2:[],
+      data2:[],
+      data3:[],
+      operateAll:{},
       channelarr:[],
       menutable1:null,
       menutable2:null,
@@ -469,23 +438,128 @@ export default {
                   actor:null,
                   HHRID:null,
                   cosstatus:null,
-                  addored:null
-              } 
+                  addored:null,
+              defaultProps: {
+                    children: 'children',
+                    label: 'label'
+                  },
+              channels_new:[],
+            }
   },
   props: ['form7.type'],
   methods:{
-    check_it:function (val) {
+    channel_new:function (uid,cid) {
+      var self=this;
+      uid=uid.toString();
+      if (uid.length==7) {
+        axios.get('http://monkey.queyoujia.com/user/check',{params:{uid:uid,cid:cid}}).then(function (res) {
+          if (res.data.code==0) {
+            self.$message({
+              message: '用户昵称为：'+res.data.data.nickname,
+              type: 'success'
+            });
+          }else{
+            self.$message({
+              message: res.data.message,
+              type: 'warning'
+            });
+          }
+        }).catch(function (err) {
+         console.log(err);
+        })
+      }
+    },
+    current_change:function (val) {
+      var self=this;
+      var chose=[];
+      self.channelarr.forEach(function (item,index) {
+        console.log(item.id);
+        for (var i = 0; i < val.length; i++) {
+             if (val[i]==item.id) {
+               item.checked=true;
+               chose.push(item.id);
+            }
+        }
+      })
+      self.channelarr.forEach(function (item,index) {
+        if (chose.indexOf(item.id)==-1) {
+          item.checked=false;
+        }
+      })
       console.log(val);
     },
+    checkUserId:function (uid,cid) {
+      var self=this;
+      var arr=null;
+      var brr=[];
+      console.log(self.channelarr);
+      self.channelarr.forEach(function (item,index) {
+        if (item.checked==true) {
+          axios.get('http://monkey.queyoujia.com/user/check',{params:{uid:item.uid,cid:item.id}}).then(function (res) {
+            if (res.data.code==0) {
+              item.nickname=res.data.data.nickname;
+              brr.push({uid:uid,channel:cid});
+              self.channels_new=brr;
+              console.log(brr);
+            }else{
+              item.nickname=res.data.message;
+            }
+          }).catch(function (err) {
+           console.log(err);
+          })
+        }
+      });
+      arr= self.channelarr;
+      self.channelarr=[];
+      self.channelarr=arr;
+    },
+    ckchange_nav:function () {
+      var self = this;
+      // self.$refs.tree1.getCheckedNodes().forEach(function (item,index) {
+      //   self.arr1.push(item.id);
+      //   console.log('已存在!');
+      //   for (var i=0;i<self.arr1.length;i++) {
+      //       if (self.arr1[i]==item.pid) {
+      //         console.log('已存在!');
+      //       }else{
+      //         self.arr1.push(item.pid);
+      //       }
+      //   }
+      // })
+    //  console.log(self.$refs.tree1.getCheckedNodes());
+    },
+    ckchange_ope:function () {
+      var self = this;
+    //  console.log(self.$refs.tree2.getCheckedNodes());
+    },
+     resetChecked() {
+       this.$refs.tree.setCheckedKeys([]);
+     },
     onSubmit6() {
         var self = this;
         if(self.addored==1){//添加
-          console.log(self.form6.name);
-          var operations={};
-          operations.menu=self.form6.type1.concat(self.form6.type2);
-          operations.operate=self.form7.type;
-          console.log(JSON.stringify(operations));
-          axios.get('http://monkey.queyoujia.com/access/role/add',{params:{ch:'hz',name:self.form6.name,operations:JSON.stringify(operations)}}).then(function (res) {
+          //console.log(self.form6.name);
+          var arr1=[];
+          var arr2=[];
+          //console.log(self.$refs.tree1.getCheckedNodes())
+          self.$refs.tree1.getCheckedNodes().forEach(function (item,index) {
+            arr1.push(item.id);
+            console.log('已存在!');
+            for (var i=0;i<arr1.length;i++) {
+                if (arr[i]==item.pid) {
+                  console.log('已存在!');
+                }else{
+                  arr1.push(item.pid);
+                }
+            }
+          })
+          self.$refs.tree2.getCheckedNodes().forEach(function (item,index) {
+            arr2.push(item.id);
+          })
+          self.operateAll.menu=arr1;
+          self.operateAll.operate=arr2;
+          console.log(JSON.stringify(self.operateAll));
+          axios.get('http://monkey.queyoujia.com/access/role/add',{params:{ch:'hz',name:self.form6.name,operations:JSON.stringify(self.operateAll)}}).then(function (res) {
            console.log(res);
            if(res.data.code==0){
              self.$message({
@@ -498,7 +572,7 @@ export default {
                self.tableData9=res.data.data.role;
              }).catch(function (err) {
                console.log(err);
-             });         
+             });
            }else{
             self.$message({
               message: res.data.message,
@@ -509,11 +583,33 @@ export default {
           console.log(err);
         });
         }else{
-          var operations={};
-          operations.menu=self.form6.type1.concat(self.form6.type2);
-          operations.operate=self.form7.type;
-          console.log(JSON.stringify(operations));
-          axios.get('http://monkey.queyoujia.com/access/role/update',{params:{ch:'hz',id:self.cosid,name:self.form6.name,operations:JSON.stringify(operations)}}).then(function (res) {
+          var arr1=[];
+          var arr2=[];
+          self.$refs.tree1.getCheckedNodes().forEach(function (item,index) {
+            arr1.push(item.id);
+            arr1.push(item.pid);
+          })
+          self.$refs.tree2.getCheckedNodes().forEach(function (item,index) {
+            arr2.push(item.id);
+            arr1.push(item.pid);
+          });
+
+          Array.prototype.distinct = function (){
+           var arr = this,
+            result = [],
+            len = arr.length;
+           arr.forEach(function(v, i ,arr){  //这里利用map，filter方法也可以实现
+            var bool = arr.indexOf(v,i+1);  //从传入参数的下一个索引值开始寻找是否存在重复
+            if(bool === -1){
+             result.push(v);
+            }
+           })
+           return result;
+          };
+
+          self.operateAll.menu=arr1.distinct();
+          self.operateAll.operate=arr2.distinct();
+          axios.get('http://monkey.queyoujia.com/access/role/update',{params:{ch:'hz',id:self.cosid,name:self.form6.name,operations:JSON.stringify(self.operateAll)}}).then(function (res) {
            console.log(res);
            if(res.data.code==0){
              self.$message({
@@ -526,7 +622,7 @@ export default {
                self.tableData9=res.data.data.role;
              }).catch(function (err) {
                console.log(err);
-             });         
+             });
            }else{
             self.$message({
               message: res.data.message,
@@ -550,6 +646,8 @@ export default {
       addcos:function () {
         console.log(22);
         var self = this;
+        self.$refs.tree1.setCheckedKeys([]);
+        self.$refs.tree2.setCheckedKeys([]);
         self.addored=1;
         self.cosbor=true;
         self.cosheader="添加角色";
@@ -565,7 +663,7 @@ export default {
         })
         self.operatetable.forEach(function (item,index) {
           item.checked=false;
-        })       
+        })
       },
       addHHR:function () {
       var self =this ;
@@ -576,18 +674,18 @@ export default {
           var params={cid:sessionStorage.cid,channel:sessionStorage.channel,uid:value}
              axios.post('http://monkey.queyoujia.com/promoter/partner',qs.stringify(params),{headers: {
                           'Content-Type': 'application/x-www-form-urlencoded'
-                      }}).then(function (res) {                       
+                      }}).then(function (res) {
                            console.log(res);
                            if (res.data.code==0) {
                                self.$message({
                                 type: 'success',
                                 message:'添加成功'
-                              });  
+                              });
                            }else{
                             self.$message({
                                 type: 'info',
                                 message:res.data.message
-                              });  
+                              });
                           }
                       }).catch(function (err) {
                            console.log(err);
@@ -596,7 +694,7 @@ export default {
           self.$message({
             type: 'info',
             message: '取消输入'
-          });       
+          });
         });
       },
       searchHHR:function () {
@@ -621,33 +719,33 @@ export default {
       onSubmit() {
         //console.log(this.formLabelAlign);
         var self=this;
-        //self.formLabelAlign.channels=JSON.stringify(self.formLabelAlign.channels);
-        console.log(JSON.stringify(self.formLabelAlign.channels));
-        var params={};
-       // console.log(self.deitstatus);
-        if (self.deitstatus=='1') {
-          console.log(1);
-          self.geturl='http://monkey.queyoujia.com/access/user/updateV2';
-        }else if(self.deitstatus=='2'){
-          console.log(2);
-          self.geturl='http://monkey.queyoujia.com/access/user/updateV2';
+        var arr=[];
+        for (var i = 0; i < self.$refs.checkChannel.length; i++) {
+          console.log(JSON.parse(self.$refs.checkChannel[i].dataset.channels));
+          arr.push({"uid":JSON.parse(self.$refs.checkChannel[i].dataset.channels).uid.toString(),"channel":JSON.parse(self.$refs.checkChannel[i].dataset.channels).id.toString()})
         }
-        else{console.log('其他');}
-        if (self.formLabelAlign.tel&&self.formLabelAlign.channels) {
+        //console.log(self.$refs.checkChannel);
+        if(self.cosChose=='超级管理员'){
+          self.cosChose=-6;
+        }
+        console.log(JSON.stringify(arr));
+        var params={};
+        self.geturl='http://monkey.queyoujia.com/access/user/updateV2';
+        if (self.formLabelAlign.tel&&arr) {
              if (self.kouLiang1==true&&self.kouLiang2==false) {
                 self.isAlone=0;
                 params={
                   id:self.masterid,
                   /*uid:self.formLabelAlign.uid,*/
-                  channels:JSON.stringify(self.formLabelAlign.channels),
-                  company:self.formLabelAlign.company,
-                  isAlone:self.isAlone,
-                  mobile:self.formLabelAlign.tel,
-                  name:self.formLabelAlign.name,
-                  percent:self.formLabelAlign.liang,
-                  cid:'2',
-                  channel:'fuyang',
-                  roleId:self.actor};
+                  channels:JSON.stringify(arr),
+                  company:self.formLabelAlign.company,//不变
+                  isAlone:self.isAlone,//不变
+                  mobile:self.formLabelAlign.tel,//不变
+                  name:self.formLabelAlign.name,//不变
+                  percent:self.formLabelAlign.liang,//不变
+                  roleId:self.cosChose
+                };
+                //console.log(params);
                    axios.post(self.geturl,qs.stringify(params),{headers: {
                           'Content-Type': 'application/x-www-form-urlencoded'
                       }}).then(function (res) {
@@ -679,7 +777,7 @@ export default {
                             if (item.status=='1') {
                             item.status='已禁止';
                             }
-                        
+
                           }
                             if (item.isAlone=='0') {
                             console.log(item.isAlone);
@@ -730,7 +828,7 @@ export default {
                 consumeUser:self.formLabelAlign.consumer,
                 consumeCoin:self.formLabelAlign.diamond,
                 consume:self.formLabelAlign.consumermoney
-                
+
               };
                axios.post(self.geturl,qs.stringify(params),{headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -763,7 +861,7 @@ export default {
                             if (item.status=='1') {
                             item.status='已禁止';
                             }
-                        
+
                           }
                             if (item.isAlone=='0') {
                             console.log(item.isAlone);
@@ -838,16 +936,25 @@ export default {
       },
       handleEdit(index, row) {
         var self =this;
+        self.checkList=[];
         axios.get('http://monkey.queyoujia.com/access/user/userChannel',{params:{userId:row.id}}).then(function (res) {
-          self.channelarr=res.data.data.channels;
-          self.channelarr.forEach(function (item,index) {
-            if(item.checked=='false'){item.checked=false;}
-            if(item.checked=='true'){item.checked=true;}
+          if (res.data.data.userInfo.roleId==0) {
+            self.cosChose='超级管理员';
+          }else {
+            self.cosChose=res.data.data.userInfo.roleId;
+          }
+          res.data.data.channels.forEach(function (item,index) {
+            if (item.checked==true) {
+              self.checkList.push(item.id);
+            }
           })
-
+          self.formLabelAlign.klType=res.data.data.userInfo.isAlone.toString();
+          self.formLabelAlign.liang=res.data.data.userInfo.percent;
+          self.channelarr=res.data.data.channels;
+            console.log(self.channelarr);
         }).catch(function (err) {
           console.log(err)
-        })  
+        })
 
 
 
@@ -861,7 +968,7 @@ export default {
         self.masterid=row.id;
         console.log(index, row);
         self.deitstatus='2';
-        self.modalshow=true; 
+        self.modalshow=true;
 
       },
       handleDelete(index, row) {
@@ -896,7 +1003,7 @@ export default {
                               if (item.status=='1') {
                               item.status='已禁止';
                               }
-                          
+
                             }
                               if (item.isAlone=='0') {
                               console.log(item.isAlone);
@@ -924,10 +1031,10 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
 
-       
+
       },
       handleDisable:function (index,row) {
         console.log(row);
@@ -953,6 +1060,12 @@ export default {
       },
       addAdminstor:function () {
         var self=this;
+        self.channelarr=[];
+        self.checkList=[];
+        self.cosChose=null;
+        self.isAlone=null;
+        self.formLabelAlign.klType=null;
+        self.tempnickname=[null,null,null,null,null,null,null,null,null,null,null,null];
         self.deitstatus=1;//添加管理员标识
         self.deitsth="添加管理员";
         self.formLabelAlign.name=null;
@@ -964,7 +1077,7 @@ export default {
         axios.post('http://monkey.queyoujia.com/access/user/userChannel',qs.stringify(params),{headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }}).then(function (res) {
-           console.log(res);
+          self.channelarr=res.data.data.channels;
         }).catch(function (err) {
           console.log(err);
         })
@@ -994,8 +1107,7 @@ export default {
       },
       actiontype:function (val) {
         var self=this;
-        console.log(val);
-        self.actor=val;
+        console.log('现在是'+val);
 
       },
       channel:function (val) {
@@ -1026,13 +1138,13 @@ export default {
           self.formLabelAlign.channels='{"channels":[]}';
           //console.log(self.formLabelAlign.channels);
           }
-        } */  
+        } */
       },
       inputId:function (val) {
         var self =this;
-        
+
         //console.log(self.formLabelAlign.uid);
-        if(val==1){  
+        if(val==1){
            self.formLabelAlign.checkid=null;
            self.formLabelAlign.channels.forEach(function (item,index) {
              console.log(item);
@@ -1040,7 +1152,7 @@ export default {
              if(item.channel==2){item.uid=self.formLabelAlign.uid2}
              if(item.channel==3){item.uid=self.formLabelAlign.uid3}
              if(item.channel==4){item.uid=self.formLabelAlign.uid4}
-           })      
+           })
            //console.log(JSON.stringify(self.formLabelAlign.channels.channels))
            if (self.formLabelAlign.uid.length==7) {
             axios.get('http://monkey.queyoujia.com/user/check',{params:{uid:self.formLabelAlign.uid,cid:'1'}}).then(function (res) {
@@ -1065,7 +1177,7 @@ export default {
            })
            if (self.formLabelAlign.uid2.length==7) {
             axios.get('http://monkey.queyoujia.com/user/check',{params:{uid:self.formLabelAlign.uid2,cid:'2'}}).then(function (res) {
-              console.log(res.data.data);
+              //console.log(res.data.data);
               self.formLabelAlign.checkid2=res.data.data.nickname;
             }).catch(function (err) {
              console.log(err);
@@ -1118,10 +1230,10 @@ export default {
         }
         }
           else{}
-       
+
       },
       Edit:function (index,row) {
-        //console.log(row);
+        console.log(row);
         var self = this;
         self.cosbor=true;
         self.addored=2;
@@ -1132,30 +1244,64 @@ export default {
         self.form6.type2=[];
         self.operatetable=[];
         self.form7.type=[];
-        axios.get('http://monkey.queyoujia.com/access/role/resource',{params:{roleId:row.id}}).then(function (res) {
+        axios.get('http://monkey.queyoujia.com/access/role/newresource',{params:{roleId:row.id}}).then(function (res) {
          /*self.form6.type1=null;
          self.form6.type2=null;*/
+         // self.data2=[];
+         // self.data3=[];
+         var navChecked=[];
+         var operateChecked=[];
+         //self.data2=res.data.data.menu;
+         //self.data3=res.data.data.operate;
+         //console.log(self.data2);
+     		 res.data.data.menu.forEach(function (item,index) {
+           item.label=item.name+"("+item.id+")";
+           //item.children=item.child;
+           if (item.children.length>0) {
+            // console.log(item.children);
+             item.children.forEach(function (item_d,index) {
+              // console.log(item_d);
+               item_d.label=item_d.name;
+               if (item_d.checked==true) {
+                 navChecked.push(item_d);
+               }
+             })
+           }else{
+             if (item.checked==true) {
+               navChecked.push(item);
+             }
+             console.log('nochild');
+           }
+     		})
+              //  self.$refs.tree.setCheckedNodes(navChecked);
          res.data.data.operate.forEach(function (item,index) {
-            if(item.checked=="false"){ item.checked=false;}
-            if(item.checked=="true"){ item.checked=true;}
-            self.operatetable.push(item);
-          });
-          res.data.data.menu.forEach(function (item,index) {
-           // console.log(item)
-            if(item.checked=="false"){ item.checked=false;}
-            if(item.checked=="true"){ item.checked=true;}
-            if(item.id<12){
-              self.menutable1.push(item);
-            }else{
-              self.menutable2.push(item);
-            }
-          })
+           item.label=item.name+"("+item.id+")";
+           //item.children=item.child;
+           if (item.children.length>0) {
+            // console.log(item.children);
+             item.children.forEach(function (item_d,index) {
+               // console.log(navChecked);
+              item_d.label=item_d.name;
+              if (item_d.checked==true) {
+                //console.log(item_d.checked);
+                operateChecked.push(item_d);
+              }
+             })
+           }else{
+             if (item.checked==true) {
+               operateChecked.push(item);
+             }
+             console.log('nochild');
+           }
+     		})
+         console.log(operateChecked);
+         self.$refs.tree1.setCheckedNodes(navChecked);
+         self.$refs.tree2.setCheckedNodes(operateChecked);
+         self.form6.name=row.name;
+         self.cosid=row.id;
         }).catch(function (err) {
           console.log(err);
         });
-        console.log(self.form7.type)
-        self.cosid=row.id;
-        self.form6.name=row.name;
       },
       cosshow:function () {
        console.log(33);
@@ -1181,6 +1327,43 @@ export default {
     self.form6.type2=[];
     self.form7.type=[];
     self.operatetable=[];
+    axios.get('http://monkey.queyoujia.com/access/role/newresource',{params:{}}).then(function (res) {
+        console.log(res);
+        self.data2=res.data.data.menu;
+        self.data3=res.data.data.operate;
+      //  console.log(self.data2);
+    		self.data2.forEach(function (item,index) {
+          item.label=item.name+"("+item.id+")";
+          //item.children=item.child;
+          if (item.children.length>0) {
+          //  console.log(item.children);
+            item.children.forEach(function (item_d,index) {
+            //  console.log(item_d);
+              item_d.label=item_d.name;
+            })
+          }else{
+            console.log('nochild');
+          }
+    		})
+        self.data3.forEach(function (item,index) {
+          item.label=item.name+"("+item.id+")";
+          //item.children=item.child;
+          if (item.children.length>0) {
+          //  console.log(item.children);
+            item.children.forEach(function (item_d,index) {
+            //  console.log(item_d);
+              item_d.label=item_d.name;
+            })
+          }else{
+            console.log('nochild');
+          }
+    		})
+    		console.log(res);
+    }).catch(function (err) {
+      console.log(err);
+    })
+
+
     axios.post('http://monkey.queyoujia.com/access/user/list',qs.stringify(params),{headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
               }}).then(function (res) {
@@ -1197,7 +1380,7 @@ export default {
                             if (item.status=='1') {
                             item.status='已禁止';
                             }
-                        
+
                           }
                             if (item.isAlone=='0') {
                             console.log(item.isAlone);
@@ -1221,7 +1404,9 @@ export default {
              axios.get(' http://monkey.queyoujia.com/access/role/list',{params:{}}).then(function (res) {
               // console.log(res);
                self.tableData9=res.data.data.role;
-               self.rolechose=res.data.data.role;
+               self.options_new=res.data.data.role;
+               console.log('hres');
+               console.log(self.options_new);
              }).catch(function (err) {
                console.log(err);
              });
@@ -1286,14 +1471,14 @@ a {
 .modalmessage{width:580px;height: 520px;background: white;opacity: 1;box-shadow: 0px 0px 3px #666;border-radius: 5px;padding-top: 20px;overflow-y: scroll;}
 .modalhead{margin-bottom: 20px;text-align: center;font-size:20px;color: #48576a;}
 .modalmessage::-webkit-scrollbar{border-radius: 10px;width: 5px;background-color:#b5b1b1;height: 5px;}
-.modalmessage::-webkit-scrollbar-track{border-radius: 10px;background-color:#E5E9F2;} 
+.modalmessage::-webkit-scrollbar-track{border-radius: 10px;background-color:#E5E9F2;}
 .modalmessage::-webkit-scrollbar-thumb{border-radius: 10px;box-shadow: inset 0 0 6px rgba(0,0,0,.3); background-color:#324057;}
 .textclass[data-v-18498011] input{color: #545454;}
 .cosbod,.coscon{z-index: 9999;position: fixed;top: 0;right:0;bottom: 0;left: 0;margin:auto;background-color: black;opacity: 0.75;width: 100%;height: 100%;}
 .coscon{z-index: 99999;background-color: white;min-width:600px;height: 80%;max-width: 60%; opacity: 1;overflow-y: scroll;border-radius: 5px;}
 .coscon>header{text-align: center;padding:2vh 0;font-size:22px;color: #445454;background-color: white;}
 .coscon::-webkit-scrollbar{border-radius: 10px;width: 5px;background-color:#b5b1b1;height: 5px;}
-.coscon::-webkit-scrollbar-track{border-radius: 10px;background-color:#E5E9F2;} 
+.coscon::-webkit-scrollbar-track{border-radius: 10px;background-color:#E5E9F2;}
 .coscon::-webkit-scrollbar-thumb{border-radius: 10px;box-shadow: inset 0 0 6px rgba(0,0,0,.3); background-color:#324057;}
 .fromname{width:91.3333%;margin: auto;}
 </style>

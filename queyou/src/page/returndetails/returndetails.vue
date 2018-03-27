@@ -200,10 +200,10 @@ export default {
          self.tableData=[]
          var tableTemp=[];
          function timeChangetype(stringTime1,stringTime2){
-             var time={timestamp1:0,timestamp2:0} 
-             time.timestamp1 = Date.parse(stringTime1); 
-             time.timestamp2 = Date.parse(stringTime2); 
-             return time;  
+             var time={timestamp1:0,timestamp2:0}
+             time.timestamp1 = Number(Date.parse(stringTime1)/1000);
+             time.timestamp2 = Number(Date.parse(stringTime2)/1000)+86399;
+             return time;
             }
         var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);
         var params={
@@ -237,8 +237,8 @@ export default {
               //console.log(self.tableData)
               var tableTemp=[];
               var endTime=new Date();
-              endTime=endTime.setHours('00', '00', '00', '0');
-              var startTime=endTime-86400000*365;
+              endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+              var startTime=endTime-86400*365+1;
               var params={
                 startTime:startTime,
                 endTime:endTime,
@@ -279,8 +279,8 @@ export default {
                 self.tableData=[]
                 var tableTemp=[];
                 var endTime=new Date();
-                endTime=endTime.setHours('00', '00', '00', '0');
-                var startTime=endTime-(86400000*getCountDays());
+                endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                var startTime=endTime-(86400*getCountDays())+1;
                 console.log(startTime)
                 var params={
                   startTime:startTime,
@@ -311,8 +311,8 @@ export default {
                 self.tableData=[]
                 var tableTemp=[];
                 var endTime=new Date();
-                endTime=endTime.setHours('00', '00', '00', '0');
-                var startTime=endTime-86400000*7;
+                endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                var startTime=endTime-864000*7+1;
                 var params={
                   startTime:startTime,
                   endTime:endTime,
@@ -344,8 +344,8 @@ export default {
                   self.tableData=[]
                   var tableTemp=[];
                   var endTime=new Date();
-                  endTime=endTime.setHours('00', '00', '00', '0');
-                  var startTime=endTime-86400000;
+                  endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                  var startTime=endTime-86400+1;
                   console.log(endTime);
                   var params={
                     startTime:startTime,
@@ -370,7 +370,7 @@ export default {
                     console.log(err);
                   })
               }
-         
+
          }
          else{
             self.tableData=[]
@@ -394,7 +394,7 @@ export default {
 
         }).catch(function (err) {
           console.log(err);
-        }) 
+        })
          }
       },
      yesterDay:function () {
@@ -407,8 +407,8 @@ export default {
         self.tableData=[]
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-86400000;
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400+1;
         console.log(endTime);
         var params={
           startTime:startTime,
@@ -442,8 +442,8 @@ export default {
         self.tableData=[]
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-86400000*7;
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400*7+1;
         var params={
           startTime:startTime,
           endTime:endTime
@@ -487,8 +487,8 @@ export default {
         self.tableData=[]
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-86400000*getCountDays();
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400*getCountDays()+1;
         var params={
           startTime:startTime,
           endTime:endTime
@@ -520,8 +520,8 @@ export default {
         //console.log(self.tableData)
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-86400000*365;
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400*365+1;
         var params={
           startTime:startTime,
           endTime:endTime
@@ -553,12 +553,12 @@ export default {
          self.tableData=[]
          var tableTemp=[];
          function timeChangetype(stringTime1,stringTime2){
-             var time={timestamp1:0,timestamp2:0} 
-             time.timestamp1 = Date.parse(stringTime1); 
-             time.timestamp2 = Date.parse(stringTime2); 
-             return time;  
+             var time={timestamp1:0,timestamp2:0}
+             time.timestamp1 = Number(Date.parse(stringTime1)/1000);
+             time.timestamp2 = Number(Date.parse(stringTime2)/1000)+86399;
+             return time;
             }
-        var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);  
+        var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);
         if (picktime.timestamp1&&picktime.timestamp2) {
           if (picktime.timestamp2-picktime.timestamp1>0) {
                 var params={
@@ -589,9 +589,9 @@ export default {
                 type: 'warning'
             });
             }
-            
+
           }
-        else{ 
+        else{
            return;
         }
       },
@@ -603,11 +603,11 @@ export default {
         self.tableData=[]
         var tableTemp=[];
          function timeChangetype(stringTime1,stringTime2){
-             var time={timestamp1:0,timestamp2:0} 
-             time.timestamp1 = Date.parse(stringTime1); 
-             time.timestamp2 = Date.parse(stringTime2); 
-             return time;  
-            }  
+             var time={timestamp1:0,timestamp2:0}
+             time.timestamp1 = Number(Date.parse(stringTime1)/1000);
+             time.timestamp2 = Number(Date.parse(stringTime2)/1000)+86399;
+             return time;
+            }
         var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);
         if (picktime.timestamp1&&picktime.timestamp2) {
             if (picktime.timestamp2-picktime.timestamp1>0) {
@@ -639,7 +639,7 @@ export default {
                 type: 'warning'
             });
             }
-            
+
           }
           else{
             return;
@@ -650,7 +650,7 @@ export default {
     computed:{
       key(){
          //this.pageSize=this.tableData.length;
-       }     
+       }
     },
     mounted:function(){
       var self=this;
@@ -680,7 +680,7 @@ export default {
           }
           else{
               console.log(index)
-          }         
+          }
         })
       }).catch(function (err) {
         console.log(err);

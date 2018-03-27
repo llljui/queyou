@@ -21,31 +21,41 @@
         </el-form>
         </el-tab-pane>
         <el-tab-pane label="推广员列表" index="tab2">
-            <el-table
+          <el-col :span="24" style="margin-bottom:10px;"><el-button  @click="sortB" type="danger" style="float:right;">代理授权时间排序 <i :class="iconsort"></i></el-button></el-col>
+        <el-table
           :data="tableData2"
           style="width: 100%"
           :row-class-name="tableRowClassName">
           <el-table-column
             prop="nickname"
             align="center"
+            show-overflow-tooltip
             label="昵称">
           </el-table-column>
           <el-table-column
             prop="uid"
             align="center"
+            show-overflow-tooltip
             label="游戏ID">
+          </el-table-column>
+          <el-table-column
+            prop="lastLoginTime"
+            align="center"
+            show-overflow-tooltip
+            label="最后消费时间">
           </el-table-column>
           <el-table-column
             prop="dateline"
             align="center"
-            label="时间">
+            show-overflow-tooltip
+            label="成为代理时间">
           </el-table-column>
         </el-table>
              <div class="block">
              <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
-              :current-page="currentPage1"       
+              :current-page="currentPage1"
               :page-size="1"
               layout="total, prev, pager, next, jumper"
               :total="pageSize">
@@ -55,7 +65,7 @@
     <el-tab-pane label="解除绑定" index="tab3">
       <el-col :span="8" >
         <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
-          
+
               <el-form-item label="游戏ID">
                 <el-input v-model="formLabelAlign.uid" @change="setuid"></el-input>
               </el-form-item>
@@ -105,6 +115,7 @@ export default {
   name: 'promoters',
   data () {
     return {
+        iconsort:'el-icon-fa-angle-double-up',
         options: [{
           value: '1',
           label: '大冶棋牌'
@@ -147,10 +158,31 @@ export default {
           tabHeight:'',
           currentPage1: 1,
           pageSize:null,
-          tableTemp:[]
+          tableTemp:[],
+          order:1
     }
   },
   methods:{
+    sortB:function () {
+      var self=this;
+      if (self.order==1) {
+        self.order=2;
+        self.iconsort='el-icon-fa-angle-double-down';
+      }else{
+        self.order=1;
+        self.iconsort='el-icon-fa-angle-double-up';
+      }
+      axios.get('http://monkey.queyoujia.com/rebate/list',{params:{page:1,order:self.order}}).then(function (res) {
+        if (res.data.code==0) {
+          self.tableData2=[];
+          self.currentPage1='1';
+          self.pageSize=res.data.data.total;
+          self.tableData2=res.data.data.list;
+        }
+      }).catch(function (err) {
+        console.log(err);
+      })
+    },
     unwound:function(){
       var self=this;
       var params={}
@@ -174,7 +206,7 @@ export default {
                                 message: res.data.message,
                                 type: 'warning'
                               });
-                          }              
+                          }
                       }).catch(function(err){
                         console.log(err);
                       });
@@ -183,7 +215,7 @@ export default {
             title:'失败',
             type: 'info',
             message: '取消输入'
-          });       
+          });
         });
     },
     setuid:function (val) {
@@ -201,7 +233,7 @@ export default {
                         }else{
                             self.formLabelAlign.uidck=res.data.message;
                             console.log(res.data.data.nickname);
-                        }                   
+                        }
                       }).catch(function(err){
                         console.log(err);
                       });
@@ -222,7 +254,7 @@ export default {
                           self.formInline.nikname='查询失败';
                           self.searchinfo=false;
                         }
-                        
+
                       }).catch(function(err){
                         console.log(err);
                       });
@@ -260,7 +292,7 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消操作'
-          });          
+          });
         });
         }
         else{
@@ -270,7 +302,7 @@ export default {
           type: 'warning'
         });
           return ;
-        }    
+        }
       },
       reset:function(){
         this.formInline.gameId=''
@@ -301,7 +333,7 @@ export default {
       handleCurrentChange(val) {
             var self=this;
             self.tableData2=[]
-            var params={ch:'ch',page:val}
+            var params={ch:'ch',page:val,order:self.order}
             axios.post('http://monkey.queyoujia.com/rebate/list',qs.stringify(params),{headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                 }}).then(function(res){
@@ -314,7 +346,7 @@ export default {
                    //console.log(self.tableData2);
                 }).catch(function (err) {
                   console.log(err);
-                })     
+                })
 
       }
   },
@@ -327,7 +359,7 @@ export default {
   mounted(){
     var self=this;
     self.tableData2=[]
-    var params={ch:'ch',page:'1'}
+    var params={ch:'ch',page:'1',order:self.order}
     axios.post('http://monkey.queyoujia.com/rebate/list',qs.stringify(params),{headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }}).then(function(res){

@@ -1,12 +1,22 @@
 <template>
-  <div class="menu">
+  <div class="menu_">
  	<el-col :span="12" class="mrt">
-      <el-tree
+      <!-- <el-tree
         :data="data2"
-        show-checkbox      
+        show-checkbox
         node-key="id"
         @check-change="ckchange"
         @current-change="curchange"
+        :props="defaultProps">
+      </el-tree> -->
+      <el-tree
+        :data="data2"
+        show-checkbox
+        @check-change="ckchange"
+        @current-change="curchange"
+        node-key="id"
+        ref="tree"
+        highlight-current
         :props="defaultProps">
       </el-tree>
        <!-- :default-expanded-keys="[2, 3]"
@@ -29,8 +39,9 @@
 	    <el-input v-model="formLabelAlign.ico"></el-input>
 	  </el-form-item>
 	   <el-form-item>
+       <el-button  @click="resetForm">重置</el-button>
 	    <el-button type="primary" @click="submitForm">提交</el-button>
-	    <el-button @click="resetForm">重置</el-button>
+      <el-button  @click="Delete" type="danger" style="float:right">删除</el-button>
   	  </el-form-item>
 	</el-form>
    </el-col>
@@ -41,11 +52,11 @@
 import axios from "axios";
 import qs from "qs";
 export default {
-  name: 'menu',
+  name: 'menu_',
   data () {
     return {
-       data2: [],
-        defaultProps: {
+      data2: [],
+       defaultProps: {
           children: 'children',
           label: 'label'
         },
@@ -54,6 +65,7 @@ export default {
     	menupid:null,
     	menuurl:null,
     	edits:null,
+      ids:null,
     	labelPosition: 'right',
         formLabelAlign: {
         pid:'',
@@ -65,9 +77,46 @@ export default {
     }
   },
   methods:{
+    Delete:function () {
+      var self=this;
+      axios.get('http://monkey.queyoujia.com/access/menu/delete',{params:{id:self.ids}}).then(function (res) {
+          if (res.data.code==0) {
+            self.$message({
+               message: '删除成功',
+               type: 'success'
+             });
+             axios.get('http://monkey.queyoujia.com/access/menu/newlist',{params:{}}).then(function (res) {
+               self.data2=res.data.data.menu;
+               self.data2.forEach(function (item,index) {
+                 item.label=item.name+"("+item.id+")";
+                 item.children=item.child;
+                 if (item.children.length>0) {
+                   console.log(item.children);
+                   item.children.forEach(function (item_d,index) {
+                     console.log(item_d);
+                     item_d.label=item_d.name;
+                   })
+                 }else{
+                   console.log('nochild');
+                 }
+              })
+             }).catch(function (err) {
+               console.log(err);
+             })
+       }else{
+         self.$message({
+            message: res.data.message,
+              type: 'warning'
+            });
+       }
+      }).catch(function (err) {
+        console.log(err);
+      })
+    },
     curchange:function (val,obj) {
       console.log(val);
       var self =this;
+      self.ids=val.id;
       self.edits="修改菜单";
       self.formLabelAlign.menu=val.name;
       self.formLabelAlign.route=val.ui_sref;
@@ -76,14 +125,15 @@ export default {
       self.formLabelAlign.id=val.id;
     },
     ckchange:function (val,ifcheck,nodecheck) {
-      console.log(val);
       var self = this;
+      console.log(this.$refs.tree.getCheckedNodes());
       self.edits="修改菜单";
       self.formLabelAlign.menu=val.name;
       self.formLabelAlign.route=val.ui_sref;
       self.formLabelAlign.pid=val.pid;
       self.formLabelAlign.ico=val.icon;
       self.formLabelAlign.id=val.id;
+      self.ids=val.id;
     },
   	submitForm() {
   		var self =this;
@@ -101,12 +151,21 @@ export default {
                  self.formLabelAlign.route=null;
                  self.formLabelAlign.pid=null;
                  self.formLabelAlign.ico=null;
-              axios.get('http://monkey.queyoujia.com/access/menu/list',{params:{}}).then(function (res) {
+              axios.get('http://monkey.queyoujia.com/access/menu/newlist',{params:{}}).then(function (res) {
                 self.data2=res.data.data.menu;
                 self.data2.forEach(function (item,index) {
                   item.label=item.name+"("+item.id+")";
-                })
-                console.log(res);
+                  item.children=item.child;
+                  if (item.children.length>0) {
+                    console.log(item.children);
+                    item.children.forEach(function (item_d,index) {
+                      console.log(item_d);
+                      item_d.label=item_d.name;
+                    })
+                  }else{
+                    console.log('nochild');
+                  }
+            		})
               }).catch(function (err) {
                 console.log(err);
               })
@@ -132,12 +191,22 @@ export default {
                self.formLabelAlign.route=null;
                self.formLabelAlign.pid=null;
                self.formLabelAlign.ico=null;
-              axios.get('http://monkey.queyoujia.com/access/menu/list',{params:{}}).then(function (res) {
+              axios.get('http://monkey.queyoujia.com/access/menu/newlist',{params:{}}).then(function (res) {
                 self.data2=res.data.data.menu;
                 self.data2.forEach(function (item,index) {
                   item.label=item.name+"("+item.id+")";
-                })
-                console.log(res);
+                  item.children=item.child;
+                  if (item.children.length>0) {
+                    console.log(item.children);
+                    item.children.forEach(function (item_d,index) {
+                      console.log(item_d);
+                      item_d.label=item_d.name;
+                    })
+                  }else{
+                    console.log('nochild');
+                  }
+            		})
+            		console.log(res);
               }).catch(function (err) {
                 console.log(err);
               })
@@ -162,13 +231,24 @@ export default {
       }
   },
   mounted(){
-  	console.log(22);
   	var self = this;
   	self.edits='新增菜单';
-  	axios.get('http://monkey.queyoujia.com/access/menu/list',{params:{}}).then(function (res) {
+  	axios.get('http://monkey.queyoujia.com/access/menu/newlist',{params:{}}).then(function (res) {
       self.data2=res.data.data.menu;
+      console.log('sssss');
+      console.log(self.data2);
   		self.data2.forEach(function (item,index) {
         item.label=item.name+"("+item.id+")";
+        item.children=item.child;
+        if (item.children.length>0) {
+          console.log(item.children);
+          item.children.forEach(function (item_d,index) {
+            console.log(item_d);
+            item_d.label=item_d.name;
+          })
+        }else{
+          console.log('nochild');
+        }
   		})
   		console.log(res);
   	}).catch(function (err) {

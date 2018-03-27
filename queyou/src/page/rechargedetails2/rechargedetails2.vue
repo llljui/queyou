@@ -117,7 +117,7 @@ export default {
         var tableTemp2=[]
         var params={
            startTime:sessionStorage.startTime,
-           endTime:sessionStorage.endTime-28800000,
+           endTime:sessionStorage.endTime,
            page:val
         }
         axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
@@ -136,14 +136,14 @@ export default {
 
         }).catch(function (err) {
           console.log(err);
-        }) 
-       
-      },   
+        })
+
+      },
     },
     computed:{
       key(){
          /*this.pageSize=this.tableData.length;*/
-       }     
+       }
     },
     watch:{
 
@@ -159,7 +159,7 @@ export default {
         var tableTemp2=[]
         var params={
            startTime:sessionStorage.startTime,
-           endTime:sessionStorage.endTime-28800000
+           endTime:sessionStorage.endTime
         }
         axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
@@ -168,12 +168,12 @@ export default {
         tableTemp=tableTemp[0].list;
         tableTemp2=[res.data.data];
         self.pageSize=tableTemp2[0].total;
-       // console.log(tableTemp)
+
          for(let x in tableTemp){
           self.tableData.push( tableTemp[x])
-          /*console.log(tableTemp[x])*/
+
          }
-          /*console.log(self.tableData)*/
+
 
         }).catch(function (err) {
           console.log(err);

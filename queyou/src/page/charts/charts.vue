@@ -176,6 +176,10 @@
     </el-pagination>
 
   </el-tab-pane>
+  <el-tab-pane label="微信昵称转换">
+    <el-col :span="5"> <el-input type="number" v-model="nUid"></el-input></el-col>
+   <el-col :span="3" style="margin-left:10px;"> <el-button type="primary" @click="toNickname">转换</el-button></el-col>
+  </el-tab-pane>
 </el-tabs>
   </div>
 </template>
@@ -187,6 +191,7 @@ export default {
   name: 'charts',
   data () {
     return {
+      nUid:null,
      agent_id:null,
      user_id:null,
      currentPage3: 1,
@@ -222,10 +227,29 @@ export default {
           value: '3',
           label: '邀请码'
         }],
-        value: '',
+        value: '1',
         par:null
   }},
   methods:{
+    toNickname:function () {
+      var self=this;
+      axios.get('http://monkey.queyoujia.com/realname/rename',{params:{uid:self.nUid}}).then(function (res) {
+        //console.log(res.code);
+        if (res.data.code==0) {
+          self.$message({
+          message: '转换成功!',
+          type: 'success'
+        });
+        }else{
+          self.$message({
+          message: res.data.message,
+          type: 'warning'
+        });
+        }
+      }).catch(function (err) {
+        console.log(err);
+      })
+    },
     search_had:function () {
      var self=this;
      var par={};

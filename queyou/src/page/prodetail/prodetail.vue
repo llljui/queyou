@@ -64,7 +64,7 @@
     min-width="120"
      align="center"
       prop="dateline"
-      label="绑定时间">
+      label="注册时间">
     </el-table-column>
      <el-table-column label="操作"  align="center">
       <template scope="scope">
@@ -220,7 +220,7 @@ export default {
       }).catch(function (err) {
        console.log(err);
       })
-      }else if(val==3){ 
+      }else if(val==3){
         self.showbtn1=false;
         self.showbtn2=false;
         self.showbtn3=false;

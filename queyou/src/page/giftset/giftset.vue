@@ -1,11 +1,17 @@
 <template>
   <div class="giftset" v-loading="loading">
-     <!-- <el-col :span="4"><el-input class="mrt" size="small"></el-input></el-col>
+    <!-- <el-col :span="4"><el-input class="mrt" size="small"></el-input></el-col>
      <el-col :span="1"><el-button type="primary" size="small" class="mrt mrlt">查询</el-button></el-col> -->
-    <el-col :span="1" style="margin-right:13px;"><el-button type="info" size="small" @click="lookact" class="mrt mrlt">查看奖品列表</el-button></el-col>
+    <!-- <el-col :span="1" style="margin-right:13px;"><el-button type="info" size="small" @click="lookact" class="mrt mrlt">查看奖品列表</el-button></el-col>
     <el-col :span="2" :offset='1'><el-button type="danger" size="small" class="mrt" @click="gitadd">添加活动</el-button></el-col>
     <el-col :span="2"><el-button type="info" size="small" class="mrt" @click="set_alert">弹窗配置</el-button></el-col>
     <el-col :span="2"><el-button  size="small" type="info"  class="mrt" @click="set_phb">排行榜配置</el-button></el-col>
+    <el-col :span="2"><el-button  size="small" type="danger"  class="mrt" @click="set_wxphb">公总号抽奖概率配置</el-button></el-col> -->
+    <el-tag class="mrt mrlt" type="info" style="cursor:pointer"><span @click="lookact">查看奖品列表</span></el-tag>
+    <el-tag type="info"  style="cursor:pointer"><span @click="gitadd">添加活动</span></el-tag>
+    <el-tag type="info"  style="cursor:pointer"><span @click="set_alert">弹窗配置</span></el-tag>
+    <el-tag type="info"  style="cursor:pointer"><span @click="set_phb">排行榜配置</span></el-tag>
+    <el-tag type="info"  style="cursor:pointer"><span @click="set_wxphb">公总号抽奖概率配置</span></el-tag>
     <!-- <el-col :span="2"><el-button  size="small" type="info"  class="mrt" @click="poster_set">代理海报生成器</el-button></el-col> -->
   <template >
   <el-table
@@ -38,32 +44,13 @@
       label="活动内容">
       <template scope="scope">
         <img :src="scope.row.content" alt="loading..." width="50" height="50" style="margin-top:10px;">
-       <!--  <span style="margin-left: 10px">{{ scope.row.content }}</span> -->
       </template>
     </el-table-column>
-<!--     <el-table-column
-  align="center"
-  label="区域">
-  <template scope="scope">
-    <span style="margin-left: 10px">{{ scope.row.cid }}</span>
-  </template>
-</el-table-column> -->
-    <!-- <el-table-column
-      align="center"
-      label="活动日期">
-      <template scope="scope">
-        <span style="margin-left: 10px">{{ scope.row.dateline }}</span>
-      </template>
-    </el-table-column> -->
     <el-table-column label="操作" align="center">
       <template scope="scope">
         <el-button
           size="mini"
           @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <!-- <el-button
-          size="mini"
-          type="primary"
-          @click="handleLook(scope.$index, scope.row)">详情</el-button> -->
           <el-button
           size="mini"
           type="danger"
@@ -100,7 +87,7 @@
     <label>奖品类型</label>
     <el-radio v-model="domain.value" label="1">红包</el-radio>
     <el-radio v-model="domain.value" label="2">钻石</el-radio>
-    
+
     <el-upload
       class="avatar-uploader"
       action="http://monkey.queyoujia.com/public/upload"
@@ -111,8 +98,8 @@
       <img v-if="imageUrl" :src="imageUrl" class="avatar">
       <i v-else class="btnup">点击上传</i>
     </el-upload>
-    <el-input v-model="domain.gailv" placeholder="请输入奖品概率" type="number" class="mtt forminput"></el-input>   
-    <el-input v-model="domain.shuliang" placeholder="请输入奖品数量" type="number" class="mtt forminput"></el-input> 
+    <el-input v-model="domain.gailv" placeholder="请输入奖品概率" type="number" class="mtt forminput"></el-input>
+    <el-input v-model="domain.shuliang" placeholder="请输入奖品数量" type="number" class="mtt forminput"></el-input>
     <el-button @click.prevent="removeDomain(domain)">删除</el-button>
      <!-- <el-button @click="addDomain" type="danger">新增奖品</el-button> -->
         </el-form-item>
@@ -121,7 +108,7 @@
           <el-button type="primary" @click="submitForm('dynamicValidateForm')" class="fft">提交</el-button>
         </el-form-item>
         </el-form>
-      </el-col> 
+      </el-col>
     </el-row>
   </div>
 <!----------------------------------------------------------------------------------- -->
@@ -164,7 +151,7 @@
             <el-button @click="borshow">取消</el-button>
           </el-form-item>
        </el-form>
-      </el-col> 
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -358,7 +345,7 @@
         prop="channel"
         label="区域">
       </el-table-column>
-  
+
       <el-table-column
         show-overflow-tooltip
         align="center"
@@ -388,7 +375,7 @@
     <el-button class="btn_3" @click="add_set_3">添加新配置</el-button>
   </el-col>
   </div>
- 
+
   <div class="add_set_3_bg" @click="cancel_set_3" v-show="dia_set_3"></div>
   <div v-show="dia_set_3" class="add_content_set_3">
     <div class="_thead">
@@ -486,7 +473,7 @@
         sortable
         label="钻石消耗">
       </el-table-column>
-  
+
       <el-table-column
         show-overflow-tooltip
         align="center"
@@ -561,6 +548,85 @@
       </div>
     </el-col>
   </div>
+  <!------------------------------------------------>
+    <el-dialog title="公众号转盘抽奖概率配置" :visible.sync="dialogFormVisible" width="100%" ref="wxgzhjppz">
+      <el-col :span="2" class="mnt">
+        <el-select v-model="value_wx1" placeholder="请选择游戏" @change="valuechange">
+          <el-option
+            v-for="item in options_wx1"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="2" class="mnt">
+        <el-select v-model="value_wx2" placeholder="抽奖方式" @change="valuechange">
+          <el-option
+            v-for="item in options_wx2"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="3" class="mnt">
+        <el-select v-model="value_wx6" placeholder="请选择奖品类型" @change="valuechange">
+          <el-option
+            v-for="item in options_wx6"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="3" class="mnt">
+        <el-input placeholder="请输入奖品名称" v-model="value_wx3"></el-input>
+      </el-col>
+      <el-col :span="2" class="mnt">
+        <el-input placeholder="请输入概率" v-model="value_wx4" type="number"></el-input>
+      </el-col>
+      <el-col :span="3" class="mnt">
+        <el-input placeholder="请输入奖品数量" v-model="value_wx5" type="number"></el-input>
+      </el-col>
+      <el-col :span="3" class="mnt">
+        <el-input placeholder="请输入奖品额度" v-model="value_wx7" type="number"></el-input>
+      </el-col>
+      <el-col :span="2" class="mnt">
+        <el-button type="primary" @click="add_wxchance">添加</el-button>
+      </el-col>
+
+      <el-table :data="gridData">
+         <el-table-column property="id" label="ID" show-overflow-tooltip align="center"></el-table-column>
+         <el-table-column property="utype" sortable label="游戏" show-overflow-tooltip align="center"></el-table-column>
+         <el-table-column property="chancetype"  label="获得抽奖方式" show-overflow-tooltip align="center"></el-table-column>
+         <el-table-column property="prize" label="奖品" show-overflow-tooltip align="center"></el-table-column>
+         <el-table-column property="ucate" label="奖品类型" show-overflow-tooltip align="center"></el-table-column>
+         <el-table-column property="amount" label="额度" show-overflow-tooltip align="center"></el-table-column>
+         <el-table-column property="chance" label="概率(‰)" show-overflow-tooltip align="center"></el-table-column>
+         <el-table-column label="操作" align="center">
+           <template slot-scope="scope">
+             <!-- <el-button
+               size="mini"
+               @click="handleEdit_wx(scope.$index, scope.row)">编辑</el-button> -->
+             <el-button
+               size="mini"
+               type="danger"
+               @click="handleDelete_wx(scope.$index, scope.row)">删除</el-button>
+           </template>
+         </el-table-column>
+      </el-table>
+      <el-pagination
+        class="mrt fft"
+         @size-change="handleSizeChange_wx"
+         @current-change="handleCurrentChange_wx"
+         :current-page.sync="currentPage_wx"
+         :page-size="1"
+        background
+        layout="prev, pager, next"
+        :total="allpage_wx">
+      </el-pagination>
+    </el-dialog>
   </div>
 </template>
 
@@ -578,6 +644,47 @@ export default {
   },*/
   data () {
     return {
+      currentPage_wx:1,
+      allpage_wx:null,
+      options_wx1: [{
+          value: '1',
+          label: '决战大冶棋牌'
+        }, {
+          value: '2',
+          label: '八道友乐'
+        }, {
+          value: '3',
+          label: '决战绍兴游戏'
+        }, {
+          value: '8',
+          label: '全民十三水'
+        }],
+        options_wx2: [{
+            value: '1',
+            label: '分享抽奖'
+          }, {
+            value: '2',
+            label: '游戏开房抽奖'
+          }],
+        options_wx6:[
+          {
+              value: '1',
+              label: '钻石'
+            }, {
+              value: '2',
+              label: '红包'
+            }
+        ],
+        value_wx1: '',
+        value_wx2: '',
+        value_wx3: '',
+        value_wx4: '',
+        value_wx5: '',
+        value_wx6: '',
+        value_wx7: '',
+      dialogFormVisible: false,
+      gridData: [],
+      formLabelWidth: '120px',
       hb_show:true,
       phb_:{uid:'',channel:'',consume:'',nickname:'',cid:'',options1:[{
         value: '1',
@@ -601,7 +708,7 @@ export default {
       }],value_1:'',value_2:'',de_or_ad:null,id:null},
       dia_set_4:false,
       tableData_4:[],
-        dia_4:false,     
+        dia_4:false,
         add_or_edit_:null,
         pops:{
           tag:null,
@@ -729,10 +836,110 @@ export default {
      private1:null,
      listid:null,
      edorad:null,
-     haledad:null
+     haledad:null,
+     val_wx:1
     }
   },
    methods: {
+     add_wxchance:function () {
+       var self=this;
+       axios.get('http://monkey.queyoujia.com/wxprize/add',{params:{cid:self.value_wx1,type:self.value_wx2,prize:self.value_wx3,chance:self.value_wx4,num:self.value_wx5,cate:self.value_wx6,amount:self.value_wx7}}).then(function (res) {
+         console.log(res);
+         if (res.data.code==0) {
+           self.$message({
+            message: '添加成功',
+            type: 'success'
+          });
+          self.gridData=[];
+          var uty=['','决战大冶棋牌','八道友乐','决战绍兴游戏','全民十三水'];
+          var chancetype=['','分享抽奖','开房抽奖'];
+          var cate=['','钻石','红包'];
+          axios.get('http://monkey.queyoujia.com/wxprize/list',{params:{page:self.val_wx}}).then(function (res) {
+            self.gridData=res.data.data.list;
+            self.allpage_wx=res.data.data.total;
+            self.gridData.forEach(function (item,index) {
+             item.utype=uty[item.cid];
+             item.chancetype=chancetype[item.type];
+             item.ucate=cate[item.cate];
+             console.log(item.type);
+           });
+          }).catch(function (err) {
+            console.log(err);
+          })
+         }else{
+           self.$message({
+          message: res.data.message,
+          type: 'warning'
+        });
+         }
+       }).catch(function (err) {
+         console.log(err);
+       })
+     },
+     handleSizeChange_wx(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange_wx(val) {
+        console.log(`当前页: ${val}`);
+        var self=this;
+        self.gridData=[];
+        var uty=['','决战大冶棋牌','八道友乐','决战绍兴游戏','全民十三水'];
+        var chancetype=['','分享抽奖','开房抽奖'];
+        var cate=['','钻石','红包'];
+        self.val_wx=val;
+        axios.get('http://monkey.queyoujia.com/wxprize/list',{params:{page:val}}).then(function (res) {
+          self.gridData=res.data.data.list;
+          self.allpage_wx=res.data.data.total;
+          self.gridData.forEach(function (item,index) {
+           item.utype=uty[item.cid];
+           item.chancetype=chancetype[item.type];
+           item.ucate=cate[item.cate];
+         });
+        }).catch(function (err) {
+          console.log(err);
+        })
+      },
+     handleEdit_wx(index, row) {
+        console.log(index, row);
+      },
+      handleDelete_wx(index, row) {
+        console.log(index, row);
+        var self=this;
+        axios.get('http://monkey.queyoujia.com/wxprize/delete',{params:{id:row.id}}).then(function (res) {
+          if (res.data.code==0) {
+            self.$message({
+             message: '添加成功',
+             type: 'success'
+           });
+           self.gridData=[];
+           var uty=['','决战大冶棋牌','八道友乐','决战绍兴游戏','全民十三水'];
+           var chancetype=['','分享抽奖','开房抽奖'];
+           var cate=['','钻石','红包'];
+           axios.get('http://monkey.queyoujia.com/wxprize/list',{params:{page:self.val_wx}}).then(function (res) {
+             self.gridData=res.data.data.list;
+             self.allpage_wx=res.data.data.total;
+             self.gridData.forEach(function (item,index) {
+              item.utype=uty[item.cid];
+              item.chancetype=chancetype[item.type];
+              item.ucate=cate[item.cate];
+            });
+           }).catch(function (err) {
+             console.log(err);
+           })
+          }else{
+            self.$message({
+           message: res.data.message,
+           type: 'warning'
+         });
+          }
+        }).catch(function (err) {
+          console.log(err);
+        });
+      },
+     valuechange:function (val) {
+       var self=this;
+       console.log(val);
+     },
     php_value1:function (val) {
       var self=this;
       self.phb_.value_1=val;
@@ -867,13 +1074,13 @@ export default {
           }else if(self.pops.tag=='抽奖'||self.pops.tag==2){
             self.pops.tag=2;
           }else{self.pops.tag=3;}
-          
+
           if (self.pops.cid=='大冶棋牌'||self.pops.cid==1) {
             self.pops.cid=1;
           }else if(self.pops.cid=='八道雀神'||self.pops.cid==2){
             self.pops.cid=2;
           }else{self.pops.cid=3;}
-       
+
           if (self.pops.channel=='杭州'||self.pops.channel=='hz') {
             self.pops.channel='hz';
           }else if(self.pops.channel=='富阳'||self.pops.channel=='fuyang'){
@@ -932,7 +1139,7 @@ export default {
                         console.log(err);
                       })
       }
-     
+
     },
      handleEdit_4(index, row) {
       var self=this;
@@ -990,7 +1197,7 @@ export default {
           self.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
      },
      handleEdit_3(index, row) {
@@ -1015,7 +1222,7 @@ export default {
             self.value_3='抽奖';
             self.pops.tag=2;
           }else{self.value_3='通知';self.pops.tag=3;}
-          
+
           if (res.data.data.cid==1) {
             self.value_3_2='大冶棋牌';
             self.pops.cid=1;
@@ -1056,7 +1263,7 @@ export default {
           type: 'warning'
         }).then(() => {
           axios.get('http://monkey.queyoujia.com/pop/delete',{params:{id:row.id}}).then(function (res) {
-          if (res.data.code==0) {           
+          if (res.data.code==0) {
           self.$message({
             type: 'success',
             message: '删除成功!'
@@ -1098,7 +1305,7 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
       },
 
@@ -1108,7 +1315,7 @@ export default {
       self.setbor9=false;
     },
     savegift:function () {
-     // console.log(666); 
+     // console.log(666);
       var self=this;
       if (self.haledad==1) {
         var params={cid:self.value2,prize:self.giftname,num:self.giftcnt,chance:self.giftrand,cate:self.value3,icon:self.private1,amount:self.giftamount}
@@ -1125,7 +1332,6 @@ export default {
              axios.get('http://monkey.queyoujia.com/prize/list',{params:{page:1}}).then(function (res) {
               self.tableData2=res.data.data.list;
               self.allpage2=res.data.data.total;
-             
               console.log(self.tableData2.icon);
               self.tableData2.forEach(function (item,index) {
                 if (item.cate==1) {item.cate="钻石"}else{item.cate="红包"}
@@ -1197,7 +1403,7 @@ export default {
           console.log(err)
         })
 
-      } 
+      }
     },
     handleSizeChange2:function (val) {
       console.log(val) // body...
@@ -1358,7 +1564,7 @@ export default {
            // alert('submit!');
            console.log(valid);
             console.log(self.dynamicValidateForm);
-           
+
           } else {
             console.log('error submit!!');
             return false;
@@ -1521,9 +1727,9 @@ export default {
             type: 'warning'
           });
     }
-     
+
       }
-     
+
     },
       handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
@@ -1545,7 +1751,7 @@ export default {
         if (!isLt2M) {
           this.$message.error('上传图片大小不能超过 8MB!');
         }*/
-         reader.onload = function(e){ 
+         reader.onload = function(e){
             this.result // 这个就是base64编码了
             console.log(this.result);
             var params={file:this.result}
@@ -1565,7 +1771,7 @@ export default {
                           message: '上传失败',
                           type: 'warning'
                         });
-                        }                      
+                        }
                         }).catch(function (err) {
                           console.log(err);
                         })
@@ -1577,7 +1783,7 @@ export default {
         console.log(1)
         var reader = new FileReader();
         reader.readAsDataURL(file);
-         reader.onload = function(e){ 
+         reader.onload = function(e){
             this.result // 这个就是base64编码了
             console.log(this.result);
             var params={file:this.result}
@@ -1593,7 +1799,7 @@ export default {
                           message: '上传失败',
                           type: 'warning'
                         });
-                        }                      
+                        }
                         }).catch(function (err) {
                           console.log(err);
                         })
@@ -1641,7 +1847,7 @@ export default {
            /* self.tableData.forEach(function (item,index) {
               item.content='http://ouao6zxy5.bkt.clouddn.com/'+item.content;
             })*/
-            
+
             self.tableData.forEach(function (item,index) {
               if (item.cid==1) {
                 item.cid='大冶棋牌'
@@ -1671,9 +1877,9 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
-         
+
         /*self.setbor*/
       },
       borshow:function () {
@@ -1736,7 +1942,7 @@ export default {
          if (item.status==0) {
           item.status='否';
          }else{item.status='是';}
-        
+
         if (item.cid==1) {
           item.cid='大冶棋牌';;
         }else if(item.cid==2){
@@ -1813,13 +2019,40 @@ export default {
         }).catch(function (err) {
           console.log(err)
         })
+      },
+      set_wxphb:function () {
+       console.log(23);
+       var self=this;
+       self.currentPage_wx=1;
+       self.$refs.wxgzhjppz.$refs.dialog.style.width='80%';
+       console.log(self.$refs.wxgzhjppz.$refs.dialog);
+       self.value_wx1=null;
+       self.value_wx2=null;
+       self.value_wx3=null;
+       self.value_wx4=null;
+       self.value_wx5=null;
+       self.value_wx6=null;
+       self.value_wx7=null;
+       self.dialogFormVisible=true;
+       self.gridData=[];
+       var uty=['','决战大冶棋牌','八道友乐','决战绍兴游戏','全民十三水'];
+       var chancetype=['','分享抽奖','开房抽奖'];
+       var cate=['','钻石','红包'];
+       axios.get('http://monkey.queyoujia.com/wxprize/list',{params:{page:1}}).then(function (res) {
+         self.gridData=res.data.data.list;
+         self.allpage_wx=res.data.data.total;
+         self.gridData.forEach(function (item,index) {
+          item.utype=uty[item.cid];
+          item.chancetype=chancetype[item.type];
+          item.ucate=cate[item.cate];
+        });
+       }).catch(function (err) {
+         console.log(err);
+       })
       }
-
     },
-    mounted() { 
+    mounted() {
       var self=this;
-
-
     axios.get('http://monkey.queyoujia.com/activeconf/list',{params:{page:1}}).then(function (res) {
       self.tableData=res.data.data.list;
       self.allpage=res.data.data.total;
@@ -1849,6 +2082,7 @@ export default {
 <style scoped>
 .mrt{margin: 10px 0;}
 .mrlt{margin-left:10px;}
+.mnt{margin: 10px 5px;}
 .bord,.borcon,.hb_bg{position: absolute;top: 0;left: 0;right: 0;bottom: 0;width: 100%;height: 100%;background-color: black;opacity: 0.55;margin: auto;z-index:666}
 .borcon{width: 60%;height: 90%;background-color: white;margin: auto;z-index:667;min-width: 900px;opacity: 1;border-radius: 3px;}
 .mtt{margin:10px auto;text-align: center;}
@@ -1865,7 +2099,7 @@ export default {
 
 .modalmessage{width:580px;height:720px;background: white;opacity: 1;box-shadow: 0px 0px 3px #666;border-radius: 5px;padding-top: 20px;overflow-y: scroll;}
 .modalmessage::-webkit-scrollbar{border-radius: 10px;width: 5px;background-color:#b5b1b1;height: 5px;}
-.modalmessage::-webkit-scrollbar-track{border-radius: 10px;background-color:#E5E9F2;} 
+.modalmessage::-webkit-scrollbar-track{border-radius: 10px;background-color:#E5E9F2;}
 .modalmessage::-webkit-scrollbar-thumb{border-radius: 10px;box-shadow: inset 0 0 6px rgba(0,0,0,.3); background-color:#324057;}
 .btnup{display:inline-block;background-color: #2196f3;color:white;width: 80px;height: 30px;line-height: 30px;}
 .el-form-item{margin:5px 0;}
@@ -1886,7 +2120,7 @@ export default {
 .dialog3_con div header{text-align: center;font-size: 18px;height:40px;line-height: 40px;border-bottom: 1px solid #ddd;}
 .gift_set_list{width: 100%;height: 88%;overflow-y: scroll;}
 .gift_set_list::-webkit-scrollbar{border-radius: 10px;width: 5px;background-color:#b5b1b1;height: 5px;}
-.gift_set_list::-webkit-scrollbar-track{border-radius: 10px;background-color:#E5E9F2;} 
+.gift_set_list::-webkit-scrollbar-track{border-radius: 10px;background-color:#E5E9F2;}
 .gift_set_list::-webkit-scrollbar-thumb{border-radius: 10px;box-shadow: inset 0 0 6px rgba(0,0,0,.3); background-color:#324057;}
 .btn_3{width: 100%;background-color: #878D99;color: white;border:1px solid white;}
 .btn_3:hover{border:1px solid #878D99;background-color: #878D99;}
@@ -1897,5 +2131,5 @@ export default {
 ._thead ul,._tbody ul{display: block;height: 40px;padding: 0;margin-top: 0;}
 ._thead ul li,._tbody ul li{float: left;width: 20%;line-height:40px;text-align: center;height: 40px;display: inline-block;padding: 0;margin-top: 0;}
 ._tbody ul li:first-child{padding-left:2%;width: 18%}
-
+.tag:hover{cursor:pointer;}
 </style>

@@ -42,7 +42,7 @@ export default {
     },
     login:function () {
       var self=this;
-      var params={ 
+      var params={
         mobile:self.username,
         code:self.vcode
       }
@@ -64,7 +64,7 @@ export default {
               sessionStorage.channel=res.data.data.channels[0].cname;
               document.cookie="cid="+res.data.data.channels[0].id+";path=/;";
               document.cookie="channel="+res.data.data.channels[0].cname+";path=/;";
-              console.log(document.cookie) 
+              console.log(document.cookie)
               sessionStorage.auth=JSON.parse(localStorage.union_operation_accountInfo).userInfo.name;
 /*              var exdate=new Date()
               exdate.setDate(exdate.getDate()+expiredays)
@@ -91,7 +91,7 @@ export default {
               }//超级管理员
               //合作方
               else if(res.data.data.userInfo.partnerId!=0){
-                  
+
               }//合作方
               //代理
               else{
@@ -137,8 +137,8 @@ export default {
               sessionStorage.channel=res.data.data.channels[0].cname;
               document.cookie="cid="+res.data.data.channels[0].id+";path=/;";
               document.cookie="channel="+res.data.data.channels[0].cname+";path=/;";
-              console.log(document.cookie) 
-               sessionStorage.auth=JSON.parse(localStorage.union_operation_accountInfo).userInfo.name;  
+              console.log(document.cookie)
+               sessionStorage.auth=JSON.parse(localStorage.union_operation_accountInfo).userInfo.name;
                 if (self.IsPC_==true) {
                 window.location.href='http://' + window.location.host+'/html/qyStage/?cid=1&channel=hz/#/platformagent';
               }else{
@@ -165,7 +165,7 @@ export default {
     },
     getCode:function () {
        var self=this;
-       var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1})|(14[0-9]{1}))+\d{8})$/; 
+       var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1})|(14[0-9]{1}))+\d{8})$/;
        var params={mobile:self.username}
        if (!myreg.test(self.username)) {
         this.$notify({
@@ -202,7 +202,7 @@ export default {
     forgetPassword:function(){
        this.$message({
             type: 'success',
-            message: '验证码已发到绑定的手机', 
+            message: '验证码已发到绑定的手机',
           });
        setTimeout(()=>{
            this.$prompt('请输入验证码', '提示', {
@@ -236,22 +236,22 @@ export default {
             type: 'error',
             message: '验证码错误'
           });
-          }        
+          }
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '取消输入'
-          });       
+          });
         });
       },3000);
-    
+
     }
   },
   mounted(){
       var self = this;
       function IsPC() {
         var userAgentInfo = navigator.userAgent;
-        var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", 
+        var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad",
         "iPod"];    //常用的手机系统版本
         var flag = true;    //建立标志
         for (var v = 0; v < Agents.length; v++) {

@@ -24,8 +24,9 @@
           <el-input v-model="formLabelAlign.type"></el-input>
         </el-form-item>
       </el-form>
-      <el-button type="primary" class="flr mrr" @click="saverouter">保存</el-button>
-       <el-button type="danger" @click="reset" class="flr">重置</el-button>    
+       <el-button  @click="reset" style="margin-left:40px;">重置</el-button>
+       <el-button type="primary"  @click="saverouter">保存</el-button>
+       <el-button  @click="Delete" type="danger" style="float:right">删除</el-button>
     </el-col>
   </div>
 </template>
@@ -37,6 +38,7 @@ export default {
   name: 'authority',
   data() {
       return {
+        ids:null,
         title:'添加接口',
         auth:null,
          labelPosition: 'right',
@@ -45,14 +47,7 @@ export default {
           region: '',
           type: ''
         },
-        data2: [{
-          id: 3,
-          label: '一级 3',
-          children: [{
-            id: 7,
-            label: '二级 3-1'
-          }]
-        }],
+        data2: [],
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -62,7 +57,42 @@ export default {
       };
     },
     methods:{
-      
+      Delete:function () {
+        var self=this;
+        axios.get('http://monkey.queyoujia.com/access/operate/delete',{params:{id:self.ids}}).then(function (res) {
+            if (res.data.code==0) {
+              self.$message({
+                 message: '删除成功',
+                 type: 'success'
+               });
+               axios.get('http://monkey.queyoujia.com/access/operate/newlist',{params:{}}).then(function (res) {
+                 self.data2=res.data.data.operate;
+                 self.data2.forEach(function (item,index) {
+                   item.label=item.name+"("+item.id+")";
+                   item.children=item.child;
+                   if (item.children.length>0) {
+                     console.log(item.children);
+                     item.children.forEach(function (item_d,index) {
+                       console.log(item_d);
+                       item_d.label=item_d.name;
+                     })
+                   }else{
+                     console.log('nochild');
+                   }
+                })
+               }).catch(function (err) {
+                 console.log(err);
+               })
+         }else{
+           self.$message({
+              message: res.data.message,
+                type: 'warning'
+              });
+         }
+        }).catch(function (err) {
+          console.log(err);
+        })
+      },
       saverouter:function () {
         var self=this;// body...
         var url;
@@ -75,11 +105,21 @@ export default {
               message: '保存成功',
               type: 'success'
             });
-            axios.get('http://monkey.queyoujia.com/access/operate/list',{params:{}}).then(function (res) {
+            axios.get('http://monkey.queyoujia.com/access/operate/newlist',{params:{}}).then(function (res) {
               console.log(res);
               self.data2=res.data.data.operate;
               self.data2.forEach(function (item,index) {
                 item.label=item.name+"("+item.id+")";
+                item.children=item.child;
+                if (item.children.length>0) {
+                  console.log(item.children);
+                  item.children.forEach(function (item_d,index) {
+                    console.log(item_d);
+                    item_d.label=item_d.name;
+                  })
+                }else{
+                  console.log('nochild');
+                }
               })
             }).catch(function (err) {
               console.log(err);
@@ -125,7 +165,7 @@ export default {
         self.formLabelAlign.region=val.router;
         self.formLabelAlign.type=val.pid;
         self.title="修改接口";
-         self.ids=val.id;
+        self.ids=val.id;
         console.log(val);
         console.log(ifcheck);
         console.log(nodecheck);
@@ -133,11 +173,21 @@ export default {
     },
     mounted(){
       var self = this;
-      axios.get('http://monkey.queyoujia.com/access/operate/list',{params:{}}).then(function (res) {
+      axios.get('http://monkey.queyoujia.com/access/operate/newlist',{params:{}}).then(function (res) {
         console.log(res);
         self.data2=res.data.data.operate;
         self.data2.forEach(function (item,index) {
           item.label=item.name+"("+item.id+")";
+          item.children=item.child;
+          if (item.children.length>0) {
+            console.log(item.children);
+            item.children.forEach(function (item_d,index) {
+              console.log(item_d);
+              item_d.label=item_d.name;
+            })
+          }else{
+            console.log('nochild');
+          }
         })
       }).catch(function (err) {
         console.log(err);

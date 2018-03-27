@@ -6,8 +6,8 @@ import router from './router'
 import ElementUI from 'element-ui'
 /*这里是公共组件-------------*/
 /*import './assets/ueditor/ueditor.config.js'
-import './assets/ueditor/ueditor.all.min.js' 
-import './assets/ueditor/lang/zh-cn/zh-cn.js' 
+import './assets/ueditor/ueditor.all.min.js'
+import './assets/ueditor/lang/zh-cn/zh-cn.js'
 import './assets/ueditor/ueditor.parse.min.js' */
 /*------------------------*/
 import 'element-ui/lib/theme-default/index.css'
@@ -16,7 +16,7 @@ Vue.config.productionTip = false //设置 Vue.config.productionTip = false 来�
 //Vue.use(VueQuillEditor)
 Vue.use(ElementUI)
 /*-----------------------*/
-
+sessionStorage.weburl='http://monkey.queyoujia.com/';
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

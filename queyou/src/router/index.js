@@ -238,57 +238,46 @@ export default new Router({
       noDropdown: true,
       children: [{ path: 'perdetails', name:'提现/返现明细', component: _import('perdetails/perdetails') }]
     },
-//一期路由
-  /*  {
-      path:'/returndetails',
+    {
+      path:'/commissionReturn',
       component:Layout,
-      redirect: 'returndetails/returndetails',
+      redirect: 'commissionReturn/commissionReturn',
       hidden: true,
       noDropdown: true,
-      children: [{ path: 'returndetails',name:'返现明细', component: _import('returndetails/returndetails') }]
+      children: [{ path: 'commissionReturn', name:'代理返佣', component: _import('commissionReturn/commissionReturn')}]
     },
     {
-      path:'/returndetails',
+      path:'/outline',
       component:Layout,
-      redirect: 'returndetails/returndetails',
+      redirect: 'outline/outline',
       hidden: true,
       noDropdown: true,
-      children: [{ path: 'returndetails',name:'返现明细', component: _import('returndetails/returndetails') }]
+      children: [{ path: 'outline', name:'用户违规处理', component: _import('outline/outline') }]
     },
     {
-      path:'/returndetails',
+      path:'/custouser',
       component:Layout,
-      redirect: 'returndetails/returndetails',
+      redirect: 'custouser/custouser',
       hidden: true,
       noDropdown: true,
-      children: [{ path: 'returndetails',name:'返现明细', component: _import('returndetails/returndetails') }]
+      children: [{ path: 'custouser', name:'代理下级消耗', component: _import('custouser/custouser') }]
     },
     {
-      path:'/returndetails',
+      path:'/diatocoin',
       component:Layout,
-      redirect: 'returndetails/returndetails',
+      redirect: 'diatocoin/diatocoin',
       hidden: true,
       noDropdown: true,
-      children: [{ path: 'returndetails',name:'返现明细', component: _import('returndetails/returndetails') }]
+      children: [{ path: 'diatocoin', name:'兑换中心', component: _import('diatocoin/diatocoin') }]
     },
     {
-      path:'/diamond',
+      path:'/agent',
       component:Layout,
-      redirect: 'diamond/diamond',
+      redirect: 'agent/agent',
       hidden: true,
       noDropdown: true,
-      children: [{ path: 'diamond',name:'返现明细', component: _import('diamond/diamond') }]
+      children: [{ path: 'agent', name:'代理概况', component: _import('agent/agent') }]
     },
-    {
-      path:'/editlog',
-      component:Layout,
-      redirect: 'editlog/editlog',
-      hidden: true,
-      noDropdown: true,
-      children: [{ path: 'editlog',name:'返现明细', component: _import('editlog/editlog') }]
-    },*/
-
-//二期路由
     {
       path:'/platformagent/login',
       component:Layout,
@@ -337,54 +326,29 @@ export default new Router({
       noDropdown: true,
       component: _import('login/index'), hidden: true
     },
-////////
     {
-      path:'/platformagent/401',
+      path:'/log',
       component:Layout,
-      redirect: '/401',
+      redirect: 'log/log',
       hidden: true,
       noDropdown: true,
-      component: _import('errorPage/401'), hidden: true
-    },
-   {
-      path:'/returndetails/401',
-      component:Layout,
-      redirect: '/401',
-      hidden: true,
-      noDropdown: true,
-      component: _import('errorPage/401'), hidden: true
-    },
-   {
-      path:'/manualdebit/401',
-      component:Layout,
-      redirect: '/401',
-      hidden: true,
-      noDropdown: true,
-      component: _import('errorPage/401'), hidden: true
-    },
-   {
-      path:'/rechargedetails/401',
-      component:Layout,
-      redirect: '/401',
-      hidden: true,
-      noDropdown: true,
-      component: _import('errorPage/401'), hidden: true
-    },
-   {
-      path:'/recharge/401',
-      component:Layout,
-      redirect: '/401',
-      hidden: true,
-      noDropdown: true,
-      component: _import('errorPage/401'), hidden: true
+      children: [{ path: 'log', name:'操作日志', component: _import('log/log') }]
     },
     {
-      path:'/privilege/401',
+      path:'/transfer',
       component:Layout,
-      redirect: '/401',
+      redirect: 'transfer/transfer',
       hidden: true,
       noDropdown: true,
-      component: _import('errorPage/401'), hidden: true
+      children: [{ path: 'transfer',name:'代理后台转账权限', component: _import('transfer/transfer')}]
+    },
+    {
+      path:'/teammove',
+      component:Layout,
+      redirect: 'teammove/teammove',
+      hidden: true,
+      noDropdown: true,
+      children: [{ path: 'teammove',name:'代理下级会员转移', component: _import('teammove/teammove')}]
     }
   ]
 })

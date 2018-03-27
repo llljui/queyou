@@ -1,6 +1,6 @@
 <template>
   <div class="recharge">
-  
+
   <div class="jModal" v-show="openmodal"  v-bind:style="{width:modalWidth,height:modalHeight}">
    <header>至{{tabetitle}}的数据</header>
     <el-table
@@ -53,7 +53,7 @@
      <el-checkbox label="以天为单位" @change="byday"   v-bind:data-lv="lv1" name="type"></el-checkbox>
      <el-checkbox label="以月为单位" @change="bymonth" v-bind:data-lv="lv2" name="type"></el-checkbox>
      <el-checkbox label="以年为单位" @change="byyear"  v-bind:data-lv="lv3" name="type"></el-checkbox>
-    </el-col> 
+    </el-col>
   </el-row>
     <el-form-item label="" class="chosedata">
     <el-row>
@@ -82,24 +82,26 @@
     <el-table-column
       prop="time"
       label="日期"
-      width="180"
+      show-overflow-tooltip
       align="center">
     </el-table-column>
     <el-table-column
       prop="prices"
-      label="付款金额（元）"
-      width="180"
-      align="center">
+      show-overflow-tooltip
+      align="center"
+      label="付款金额（元）">
     </el-table-column>
     <el-table-column
       prop="uid"
-      label="付费人数"
-      align="center">
+      show-overflow-tooltip
+      align="center"
+      label="付费人数">
     </el-table-column>
     <el-table-column
       prop="count"
-      label="付费次数"
-      align="center">
+      show-overflow-tooltip
+      align="center"
+      label="付费次数">
     </el-table-column>
     <el-table-column  align="center" label="付款明细">
       <template scope="scope">
@@ -121,6 +123,7 @@
       :total="pageSize">
     </el-pagination>
   </div>
+
   </div>
 </template>
 
@@ -160,9 +163,11 @@ export default {
         pageSize:null,
         tabetitle:'',
         tableData2: []
+
     }
   },
     methods: {
+
       closebor:function(){
         var self = this;
         self.openbor=false;
@@ -188,7 +193,7 @@ export default {
         }
         if (self.lv2==false&&self.lv3==false) {
           var params={
-          
+
           }
          if (self.lv1=true) {
            axios.post('http://monkey.queyoujia.com/rebate/daystatistics',qs.stringify(params),{headers: {
@@ -199,10 +204,10 @@ export default {
                          tableTemp=[res.data.data];
                          tableTemp=tableTemp[0].list;
                          self.pageSize=res.data.data.total
-                         tableTemp.forEach(function (item,index) {                        
+                         tableTemp.forEach(function (item,index) {
                            self.tableData.push(item)
                            //console.log(self.tableData)
-                         })         
+                         })
                       }).catch(function (err) {
                         console.log(err);
                       })
@@ -227,7 +232,7 @@ export default {
         }
          if (self.lv3==false) {
          var params={
-          
+
           }
           if (self.lv2==true) {
             axios.post('http://monkey.queyoujia.com/rebate/monthstatistics',qs.stringify(params),{headers: {
@@ -238,10 +243,10 @@ export default {
                          tableTemp=[res.data.data];
                          tableTemp=tableTemp[0].list;
                          self.pageSize=res.data.data.total
-                         tableTemp.forEach(function (item,index) {                        
+                         tableTemp.forEach(function (item,index) {
                            self.tableData.push(item)
                            //console.log(self.tableData)
-                         })             
+                         })
                       }).catch(function (err) {
                         console.log(err);
                       })
@@ -263,7 +268,7 @@ export default {
           self.lv3=false
         }
         var params={
-          
+
           }
           if (self.lv3==true) {
           axios.post('http://monkey.queyoujia.com/rebate/yearstatistics',qs.stringify(params),{headers: {
@@ -275,10 +280,10 @@ export default {
                          tableTemp=tableTemp[0].list;
                          console.log(tableTemp)
                          self.pageSize=res.data.data.total
-                         tableTemp.forEach(function (item,index) {                        
+                         tableTemp.forEach(function (item,index) {
                            self.tableData.push(item)
                            //console.log(self.tableData)
-                         })         
+                         })
                       }).catch(function (err) {
                         console.log(err);
                       })
@@ -286,81 +291,45 @@ export default {
             return;
           }
       },
-      /*onSubmit() {
-        console.log('submit!');
-        var self=this;
-        self.pick1=false;
-        self.pick2=false;
-        var params={
-          uid:self.searchform.user,
-          orderId:self.searchform.region
-        }
-        axios.post('',{
-
-        }).then(function (res) {
-          
-        }).catch(function  (err) {
-          console.log(err)
-        })
-      },*/
         handleEdit(index, row) {
         var self = this;
-        console.log(Date.parse(row.time)/*.substring(5,7)*/)
+        sessionStorage.startTime = (new Date(row.time+" 00:00:00")).getTime()/1000;
+        console.log(sessionStorage.startTime);
         if (self.lv3==true) {
-           var endTime=Date.parse(row.time)+86400000*365;
-            //console.log(endTime);
+            sessionStorage.endTime=((new Date(Number(row.time+1).toString()+" 00:00:00")).getTime()/1000)-1;
             sessionStorage.Dates='年'
             sessionStorage.title=row.time;
-            sessionStorage.startTime=Date.parse(row.time)-28800000;
-            sessionStorage.endTime=endTime;
-    /*        self.tabetitle=row.time*/
-             self.$router.push({path: '/rechargedetails2/rechargedetails2'})
+            self.$router.push({path: '/rechargedetails2/rechargedetails2'})
              return;
         }
         if (self.lv2==true) {
             sessionStorage.Dates='月'
-
-            function getDaysInOneMonth(year, month){  
-              month = parseInt(month, 10);  
-              var d= new Date(year, month, 0);  
-              return d.getDate();  
-            } 
-            var endTime=Date.parse(row.time)+86400000*getDaysInOneMonth(row.time.substring(0,4),row.time.substring(5,7));
-            //console.log(endTime);
+            function getDaysInOneMonth(year, month){
+              month = parseInt(month, 10);
+              var d= new Date(year, month, 0);
+              return d.getDate();
+            }
+            sessionStorage.endTime=Number((new Date(row.time+" 00:00:00")).getTime()/1000)+Number(getDaysInOneMonth(row.time.substring(0,4),row.time.substring(5,7))*86400)-1;
             sessionStorage.title=row.time;
-            sessionStorage.startTime=Date.parse(row.time)-28800000;
-            sessionStorage.endTime=endTime;
-    /*        self.tabetitle=row.time*/
-             self.$router.push({path: '/rechargedetails2/rechargedetails2'})
+            self.tabetitle=row.time;
+            self.$router.push({path: '/rechargedetails2/rechargedetails2'})
              return;
         }
         if (self.lv1==true) {
             sessionStorage.Dates='日'
-            var endTime=Date.parse(row.time)+86400000;
-            //console.log(endTime);
             sessionStorage.title=row.time;
-            sessionStorage.startTime=Date.parse(row.time)-28800000;
-            sessionStorage.endTime=endTime;
-    /*        self.tabetitle=row.time*/
+            sessionStorage.endTime= Number((new Date(row.time+" 00:00:00")).getTime()/1000)+86400-1;
              self.$router.push({path: '/rechargedetails2/rechargedetails2'})
              return;
         }
         else{
-            console.log(index);
-            //console.log(row);
-            sessionStorage.Dates='日'
-            //self.openbor=false;
-            //self.openmodal=false;
-            var endTime=Date.parse(row.time)+86400000;
-           // console.log(endTime);
-            sessionStorage.title=row.time;
-            sessionStorage.startTime=Date.parse(row.time)-28800000;
-            sessionStorage.endTime=endTime;
-    /*        self.tabetitle=row.time*/
-             self.$router.push({path: '/rechargedetails2/rechargedetails2'})
-             return;
-        }
-       
+          sessionStorage.Dates='日'
+          sessionStorage.title=row.time;
+          sessionStorage.endTime= Number((new Date(row.time+" 00:00:00")).getTime()/1000)+86400-1;
+           self.$router.push({path: '/rechargedetails2/rechargedetails2'})
+           return;
+       }
+
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -380,10 +349,10 @@ export default {
              self.tableData=[]
              var tableTemp=[];
              function timeChangetype(stringTime1,stringTime2){
-                 var time={timestamp1:0,timestamp2:0} 
-                 time.timestamp1 = Date.parse(stringTime1); 
-                 time.timestamp2 = Date.parse(stringTime2); 
-                 return time;  
+                 var time={timestamp1:0,timestamp2:0}
+                 time.timestamp1 = Number(Date.parse(stringTime1)/1000);
+                 time.timestamp2 = Number(Date.parse(stringTime2)/1000)+86399;
+                 return time;
                 }
               var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);
               var params={
@@ -417,8 +386,8 @@ export default {
               //console.log(self.tableData)
               var tableTemp=[];
               var endTime=new Date();
-              endTime=endTime.setHours('00', '00', '00', '0');
-              var startTime=endTime-86400000*365;
+              endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+              var startTime=endTime-86400*365+1;
               var params={
                 startTime:startTime,
                 endTime:endTime,
@@ -443,7 +412,7 @@ export default {
                 console.log(err);
               })
               return;
-           
+
             }
              if (self.lvs==3) {
                function getCountDays() {
@@ -460,8 +429,8 @@ export default {
                 self.tableData=[]
                 var tableTemp=[];
                 var endTime=new Date();
-                endTime=endTime.setHours('00', '00', '00', '0');
-                var startTime=endTime-(86400000*getCountDays());
+                endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                var startTime=endTime-(86400*getCountDays())+1;
                 //console.log(startTime)
                 var params={
                   startTime:startTime,
@@ -492,8 +461,8 @@ export default {
                 self.tableData=[]
                 var tableTemp=[];
                 var endTime=new Date();
-                endTime=endTime.setHours('00', '00', '00', '0');
-                var startTime=endTime-86400000*7;
+                endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                var startTime=endTime-864000*7+1;
                 var params={
                   startTime:startTime,
                   endTime:endTime,
@@ -525,8 +494,8 @@ export default {
                   self.tableData=[]
                   var tableTemp=[];
                   var endTime=new Date();
-                  endTime=endTime.setHours('00', '00', '00', '0');
-                  var startTime=endTime-86400000;
+                  endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                  var startTime=endTime-86400+1;
                   //console.log(endTime);
                   var params={
                     startTime:startTime,
@@ -552,7 +521,7 @@ export default {
                   })
                   return;
               }
-         
+
          }
 
         if (self.lv3==true) {
@@ -570,7 +539,7 @@ export default {
 
             }).catch(function (err) {
               console.log(err);
-            }) 
+            })
         }else{
           if(self.lv2==true){
              //console.log(typeof(val));
@@ -588,7 +557,7 @@ export default {
 
             }).catch(function (err) {
               console.log(err);
-            }) 
+            })
           }else{
              //console.log(typeof(val));
             axios.post('http://monkey.queyoujia.com/rebate/daystatistics',qs.stringify(params),{headers: {
@@ -605,9 +574,9 @@ export default {
 
             }).catch(function (err) {
               console.log(err);
-            }) 
+            })
           }
-        }  
+        }
       },
       rechargeAll:function () {
        console.log(33);
@@ -621,13 +590,12 @@ export default {
         self.tableData=[]
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-8640000;
-        //console.log(endTime);
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400+1;
+        console.log(endTime);
         var params={
           startTime:startTime,
-          endTime:endTime,
-          sid:'4a1e0a553ddcfe5a54c72e0cab7239fc'
+          endTime:endTime
         }
         axios.post('http://monkey.queyoujia.com/rebate/daystatistics',qs.stringify(params),{headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
@@ -656,8 +624,8 @@ export default {
         self.tableData=[]
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-86400000*7;
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400*7+1;
         //console.log(startTime)
         var params={
           startTime:startTime,
@@ -701,8 +669,8 @@ export default {
         self.tableData=[]
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-86400000*getCountDays();
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400*getCountDays()+1;
         var params={
           startTime:startTime,
           endTime:endTime
@@ -733,8 +701,8 @@ export default {
         //console.log(self.tableData)
         var tableTemp=[];
         var endTime=new Date();
-        endTime=endTime.setHours('00', '00', '00', '0');
-        var startTime=endTime-86400000*365;
+        endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+        var startTime=endTime-86400*365+1;
         var params={
           startTime:startTime,
           endTime:endTime
@@ -746,14 +714,10 @@ export default {
         tableTemp=[res.data.data];
         tableTemp=tableTemp[0].list;
         tableTemp2=[res.data.data];
-        //console.log(tableTemp2)
-        self.pageSize=tableTemp2[0].total;
-         for(let x in tableTemp){
+          self.pageSize=tableTemp2[0].total;
+          for(let x in tableTemp){
           self.tableData.push( tableTemp[x])
-         /* console.log(tableTemp[x])*/
          }
-         // console.log(self.tableData)
-
         }).catch(function (err) {
           console.log(err);
         })
@@ -765,13 +729,15 @@ export default {
          var tableTemp2=[]
          self.tableData=[]
          var tableTemp=[];
+
          function timeChangetype(stringTime1,stringTime2){
-             var time={timestamp1:0,timestamp2:0} 
-             time.timestamp1 = Date.parse(stringTime1); 
-             time.timestamp2 = Date.parse(stringTime2); 
-             return time;  
+             var time={timestamp1:0,timestamp2:0}
+             time.timestamp1 = Number(Date.parse(stringTime1)/1000);
+             time.timestamp2 = Number(Date.parse(stringTime2)/1000)+86399;
+             return time;
             }
-        var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);  
+        var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);
+         console.log(picktime)
         if (picktime.timestamp1&&picktime.timestamp2) {
           if (picktime.timestamp2-picktime.timestamp1>0) {
                 var params={
@@ -784,13 +750,10 @@ export default {
                   tableTemp=[res.data.data];
                   tableTemp=tableTemp[0].list;
                   tableTemp2=[res.data.data];
-                 // console.log(tableTemp2)
                   self.pageSize=tableTemp2[0].total;
                    for(let x in tableTemp){
                     self.tableData.push( tableTemp[x])
-                   /* console.log(tableTemp[x])*/
                    }
-                 // console.log(self.tableData)
                 }).catch(function (err) {
                   console.log(err)
             })
@@ -802,9 +765,9 @@ export default {
                 type: 'warning'
             });
             }
-            
+
           }
-        else{ 
+        else{
            return;
         }
       },
@@ -816,12 +779,13 @@ export default {
         self.tableData=[]
         var tableTemp=[];
          function timeChangetype(stringTime1,stringTime2){
-             var time={timestamp1:0,timestamp2:0} 
-             time.timestamp1 = Date.parse(stringTime1); 
-             time.timestamp2 = Date.parse(stringTime2); 
-             return time;  
-            }  
+             var time={timestamp1:0,timestamp2:0}
+             time.timestamp1 = Number(Date.parse(stringTime1)/1000);
+             time.timestamp2 = Number(Date.parse(stringTime2)/1000)+86399;
+             return time;
+            }
         var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);
+        console.log(picktime)
         if (picktime.timestamp1&&picktime.timestamp2) {
             if (picktime.timestamp2-picktime.timestamp1>0) {
               var params={
@@ -852,7 +816,7 @@ export default {
                 type: 'warning'
             });
             }
-            
+
           }
           else{
             return;
@@ -891,7 +855,7 @@ export default {
         self.modalHeight=window.screen.availHeight/1.5+'px';
 
         //console.log(window.screen);
-       }     
+       }
     }
 }
 </script>
@@ -933,4 +897,5 @@ el-table .info-row {
   .el-table .positive-row {
     background: #e2f0e4;
   }
+
 </style>

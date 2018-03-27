@@ -200,7 +200,7 @@ export default {
      dayIncome:null,
      chartTime:[]
     }
-  }, 
+  },
   mounted(){
     var self =this;
     self.drawLine();
@@ -339,7 +339,7 @@ export default {
       }).catch(function (err) {
         console.log(err);
       });
-   
+
 },
   handleSizeChange(val) {
    // console.log(`每页 ${val} 条`);
@@ -349,8 +349,8 @@ export default {
     var self=this;
     self.allpage=null;
     self.tableData=[];
-    setTimeout(function () {  
-      self.loading=true;  
+    setTimeout(function () {
+      self.loading=true;
        axios.get('http://monkey.queyoujia.com/index/get_promoter_list',{params:{page:val}}).then(function(res){
           //console.log(res.data.data.list);
           self.tableData=res.data.data.list;
@@ -364,7 +364,7 @@ export default {
    },500);
   },
   mdedit:function(){
-    
+
   }
 },
   watch: {
@@ -557,7 +557,7 @@ br{display: block;height: 1px}
 .upto{
     animation:mymove 1.5s infinite;
     animation-direction:alternate;
-  -webkit-animation:mymove 1.5s infinite; 
+  -webkit-animation:mymove 1.5s infinite;
   -webkit-animation-direction:alternate;
 }
   @keyframes mymove
