@@ -21,6 +21,7 @@
     style="width: 100%">
     <el-table-column
       align="center"
+      show-overflow-tooltip
       label="ID">
       <template scope="scope">
         {{ scope.row.id }}
@@ -28,6 +29,7 @@
     </el-table-column>
     <el-table-column
       align="center"
+      show-overflow-tooltip
       label="游戏id">
       <template scope="scope">
         {{ scope.row.uid }}
@@ -36,6 +38,15 @@
     <el-table-column
       align="center"
       show-overflow-tooltip
+      label="昵称">
+      <template scope="scope">
+        {{ scope.row.nickname }}
+      </template>
+    </el-table-column>
+    <el-table-column
+      align="center"
+      show-overflow-tooltip
+      show-overflow-tooltip
       label="订单号">
       <template scope="scope">
           {{ scope.row.orderId }}
@@ -43,6 +54,7 @@
     </el-table-column>
     <el-table-column
       align="center"
+      show-overflow-tooltip
       label="提现金额（元）">
       <template scope="scope">
          {{ scope.row.amount }}
@@ -50,6 +62,7 @@
     </el-table-column>
     <el-table-column
       align="center"
+      show-overflow-tooltip
       label="结算金额（元）">
       <template scope="scope">
          {{ scope.row.money }}
@@ -57,6 +70,7 @@
     </el-table-column>
     <el-table-column
       align="center"
+      show-overflow-tooltip
       label="税率">
       <template scope="scope">
          {{ scope.row.tax }}
@@ -64,7 +78,7 @@
     </el-table-column>
     <el-table-column
       align="center"
-      min-width="110"
+    show-overflow-tooltip
       label="状态">
       <template scope="scope">
          {{ scope.row.status }}
@@ -73,14 +87,6 @@
     <el-table-column
       align="center"
       show-overflow-tooltip
-      label="审核理由">
-      <template scope="scope">
-         {{ scope.row.reason }}
-      </template>
-    </el-table-column>
-    <el-table-column
-      align="center"
-      min-width="120"
       label="申请时间">
       <template scope="scope">
          {{ scope.row.applyTime }}
@@ -114,7 +120,7 @@
     width="30%"
     :before-close="handleClose">
     <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
-      <!-- <el-form-item label="验证码"> 
+      <!-- <el-form-item label="验证码">
         <el-input v-model="formLabelAlign.code" type="number"></el-input>
       </el-form-item> -->
       <el-form-item label="游戏id">
@@ -196,10 +202,10 @@ export default {
            self.$message({
             message: '审核成功',
             type: 'success'
-          }); 
+          });
           self.tableData=[];
        self.allpage=null;
-       self.currentPage3=1;         
+       self.currentPage3=1;
        axios.get('http://monkey.queyoujia.com/withdraw/list',{params:{}}).then(function (res) {
           console.log(res);
           self.tableData=res.data.data.list;

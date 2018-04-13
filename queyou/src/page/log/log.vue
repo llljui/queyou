@@ -94,7 +94,7 @@ export default {
        console.log(`当前页: ${val}`);
        var self=this;
        self.tableData=[];
-       axios.get(sessionStorage.weburl+'/log/operatelog',{params:{adminName:self.admin,type:self.value,page:self.currentPage}}).then(function (res) {
+       axios.get(sessionStorage.weburl+'log/operatelog',{params:{adminName:self.admin,type:self.value,page:self.currentPage}}).then(function (res) {
          console.log(res);
          self.tableData=res.data.data.list;
          self.tableData.forEach(function (item,index) {
@@ -111,7 +111,7 @@ export default {
         var self=this;
         self.tableData=[];
         self.currentPage=1;
-        axios.get(sessionStorage.weburl+'/log/operatelog',{params:{adminName:self.admin,type:self.value,page:1}}).then(function (res) {
+        axios.get(sessionStorage.weburl+'log/operatelog',{params:{adminName:self.admin,type:self.value,page:1}}).then(function (res) {
           console.log(res);
           self.tableData=res.data.data.list;
           self.tableData.forEach(function (item,index) {
@@ -133,7 +133,7 @@ export default {
     },
     mounted() {
       var self=this;
-      axios.get(sessionStorage.weburl+'/log/operatelog',{params:{}}).then(function (res) {
+      axios.get(sessionStorage.weburl+'log/operatelog',{params:{}}).then(function (res) {
         console.log(res);
         self.tableData=res.data.data.list;
         self.tableData.forEach(function (item,index) {

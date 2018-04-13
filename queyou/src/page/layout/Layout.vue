@@ -14,7 +14,7 @@ export default {
   components:{slidebar,datacontent,topheader},
   data () {
     return {
-    
+
     }
   } ,
   mounted:function () {

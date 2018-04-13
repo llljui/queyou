@@ -1,50 +1,49 @@
 <template>
   <div class="rechargeDetails">
+    <el-row class="searchAll">
+      <el-col :span='8' class="formSearch">
+        <el-form :inline="true" :model="searchform">
+          <el-col :span='12' class="formSearch">
+            <el-input v-model="searchform.user" size="small" placeholder="游戏ID" style="width:95%;"></el-input>
+          </el-col>
+          <el-col :span='12' class="formSearch">
+           <el-input v-model="searchform.region" size="small" placeholder="订单号"  style="width:95%;"></el-input>
+          </el-col>
+        </el-form>
+      </el-col>
+      <el-col :span="16" class="">
+        <el-button size="small" type="primary" @click="onSubmit">查询</el-button>
+        <el-input  size="small" type="reset" class="searchRest" value='重置'></el-input>
+         <el-button size="small" type="success" v-on:click="yesterDay">昨天</el-button>
+         <el-button size="small" type="success" v-on:click="nerarSeDay">最近七天</el-button>
+         <el-button size="small" type="success" v-on:click="nearMonth">最近1个月</el-button>
+         <el-button size="small" type="success" v-on:click="nearYear">最近一年</el-button>
+         <el-button  size="small" style="margin-left:20px;" @click="toexcel" type="danger">开启excel功能</el-button>
+      </el-col>
+    </el-row>
+
       <el-form :inline="true" :model="formInline" class="form-inline">
-<!--     <el-form-item label="显示方式">
-  <el-radio-group v-model="formInline.type">
-    <el-radio label="以天为单位" v-on:click="rechargeAll"></el-radio>
-    <el-radio label="以月为单位"></el-radio>
-    <el-radio label="以年为单位"></el-radio>
-  </el-radio-group>
-</el-form-item> -->
-  <el-row class="searchAll">
-    <el-col :span='24' class="formSearch">
-      <el-form :inline="true" :model="searchform">
-        <el-form-item label="">
-          <el-input v-model="searchform.user" placeholder="游戏ID"></el-input>
-        </el-form-item>
-        <el-form-item label="">
-          <el-input v-model="searchform.region" placeholder="订单号"></el-input>
-        </el-form-item>
-      <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
-          <el-input type="reset" class="searchRest" value='重置'></el-input>
-          <el-button style="margin-left:20px;" @click="toexcel" type="danger">开启excel功能</el-button>
-        </el-form-item>
-      </el-form>
-    </el-col>
-  </el-row>
-    <el-form-item label="" class="chosedata">
-    <el-row>
-      <el-col :span="11">
-        <el-date-picker type="date" placeholder="时间段" @change='datapicker1' v-model="formInline.date1" style="width: 100%;"></el-date-picker>
-      </el-col>
-      <el-col class="line" :span="2">&nbsp&nbsp至</el-col>
-      <el-col :span="11">
-        <el-date-picker type="date" placeholder="时间段" @change="datapicker2" v-model="formInline.date2" style="width: 100%;"></el-date-picker>
-      </el-col>
-    </el-row>
-    <el-row style="float:right">
-      <el-col :span="24" class="chosebtn">
-         <el-button v-on:click="yesterDay">昨天</el-button>
-         <el-button v-on:click="nerarSeDay">最近七天</el-button>
-         <el-button v-on:click="nearMonth">最近1个月</el-button>
-         <el-button v-on:click="nearYear">最近一年</el-button>
-      </el-col>
-    </el-row>
+        <el-form-item label="" >
+        <el-row>
+          <el-col :span="8">
+            <el-date-picker type="date" placeholder="开始时间" @change='datapicker1' v-model="formInline.date1" ></el-date-picker>
+          </el-col>
+          <el-col :span="8">
+            <el-date-picker type="date" placeholder="结束时间" @change="datapicker2" v-model="formInline.date2"  ></el-date-picker>
+          </el-col>
+          <el-col :span="8">
+          <el-select v-model="value_type" placeholder="按充值方式排序" @change="rechargeTypeSelect">
+             <el-option
+               v-for="item in rechargeType"
+               :key="item.value"
+               :label="item.label"
+               :value="item.value">
+             </el-option>
+           </el-select>
+          </el-col>
+        </el-row>
     </el-form-item>
-  </el-form>
+    </el-form>
    <el-table
     :data="tableData"
     style="width: 100%;">
@@ -115,6 +114,8 @@ export default {
   name: 'rechargeDetails',
   data () {
     return {
+        value_type: '',
+        rechargeType:[],
         sTime:null,
         eTime:null,
         toexcelshow:false,
@@ -168,7 +169,7 @@ export default {
                         }
                     }
                 });//通用取uid，cidchannelvar player = new SVGA.Player('#demoCanvas');
-          self.eurl="http://monkey.queyoujia.com/html/toexcel?cid="+cids+'&channel='+channels+"&startTime="+self.toexcelTime1+"&endTime="+self.toexcelTime2+"&weburl=\/rebate\/rechargeExcel&random="+Math.random();//"http://www.baidu.com"//
+          self.eurl="http://monkey.queyoujia.com/html/toexcel?cid="+cids+'&channel='+channels+"&startTime="+self.toexcelTime1+"&endTime="+self.toexcelTime2+"&os="+self.os+"&weburl=\/rebate\/rechargeExcel&random="+Math.random();//"http://www.baidu.com"//
       },
       onSubmit() {
         var self=this;
@@ -224,7 +225,7 @@ export default {
                       startTime:picktime.timestamp1,
                       endTime:picktime.timestamp2,
                       page:val,
-
+                      os:self.os
                 }
                 self.sTime=picktime.timestamp1;
                 self.eTime=picktime.timestamp2;
@@ -235,7 +236,7 @@ export default {
                   tableTemp=tableTemp[0].list;
                   tableTemp2=[res.data.data];
                  // console.log(tableTemp2)
-                  self.pageSize=tableTemp2[0].total;
+                  self.pageSize=res.data.data.total;
                    for(let x in tableTemp){
                     self.tableData.push( tableTemp[x])
                    /* console.log(tableTemp[x])*/
@@ -259,7 +260,7 @@ export default {
                 startTime:startTime,
                 endTime:endTime,
                 page:val,
-
+                os:self.os
               }
               self.sTime=startTime;
               self.eTime=endTime;
@@ -271,7 +272,7 @@ export default {
               tableTemp=tableTemp[0].list;
               tableTemp2=[res.data.data];
               //console.log(tableTemp2)
-              self.pageSize=tableTemp2[0].total;
+              self.pageSize=res.data.data.total;
                for(let x in tableTemp){
                 self.tableData.push( tableTemp[x])
                /* console.log(tableTemp[x])*/
@@ -306,6 +307,7 @@ export default {
                   startTime:startTime,
                   endTime:endTime,
                   page:val,
+                  os:self.os
 
                 }
                 self.sTime=startTime;
@@ -318,7 +320,7 @@ export default {
                 tableTemp=[res.data.data];
                 tableTemp=tableTemp[0].list;
                 tableTemp2=[res.data.data];
-                self.pageSize=tableTemp2[0].total;
+                self.pageSize=res.data.data.total;
                  for(let x in tableTemp){
                   self.tableData.push( tableTemp[x])
                  }
@@ -340,7 +342,7 @@ export default {
                   startTime:startTime,
                   endTime:endTime,
                   page:val,
-
+                  os:self.os
                 }
                 self.sTime=startTime;
                 self.eTime=endTime;
@@ -351,7 +353,7 @@ export default {
                 tableTemp=[res.data.data];
                 tableTemp=tableTemp[0].list;
                 tableTemp2=[res.data.data];
-                self.pageSize=tableTemp2[0].total;
+                self.pageSize=res.data.data.total;
                 ///console.log(tableTemp)
                  for(let x in tableTemp){
                   self.tableData.push( tableTemp[x])
@@ -377,7 +379,7 @@ export default {
                     startTime:startTime,
                     endTime:endTime,
                     page:val,
-
+                    os:self.os
                   }
                   self.sTime=startTime;
                   self.eTime=endTime;
@@ -387,7 +389,7 @@ export default {
                   tableTemp=[res.data.data];
                   tableTemp=tableTemp[0].list;
                   tableTemp2=[res.data.data];
-                  self.pageSize=tableTemp2[0].total;
+                  self.pageSize=res.data.data.total;
                   //console.log(tableTemp)
                    for(let x in tableTemp){
                     self.tableData.push( tableTemp[x])
@@ -409,7 +411,8 @@ export default {
             var params={
               page:val,
               startTime:self.sTime,
-              endTime:self.eTime
+              endTime:self.eTime,
+              os:self.os
             }
             //console.log(typeof(val));
             axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
@@ -444,7 +447,8 @@ export default {
         console.log(endTime);
         var params={
           startTime:startTime,
-          endTime:endTime
+          endTime:endTime,
+          os:self.os
         }
         self.toexcelTime1=startTime;
         self.toexcelTime2=endTime;
@@ -454,7 +458,7 @@ export default {
         tableTemp=[res.data.data];
         tableTemp=tableTemp[0].list;
         tableTemp2=[res.data.data];
-        self.pageSize=tableTemp2[0].total;
+        self.pageSize=res.data.data.total;
         //console.log(tableTemp)
          for(let x in tableTemp){
           self.tableData.push( tableTemp[x])
@@ -480,7 +484,8 @@ export default {
         var startTime=endTime-86400*7+1;
         var params={
           startTime:startTime,
-          endTime:endTime
+          endTime:endTime,
+          os:self.os
         }
         self.toexcelTime1=startTime;
         self.toexcelTime2=endTime;
@@ -491,7 +496,7 @@ export default {
         tableTemp=[res.data.data];
         tableTemp=tableTemp[0].list;
         tableTemp2=[res.data.data];
-        self.pageSize=tableTemp2[0].total;
+        self.pageSize=res.data.data.total;
         ///console.log(tableTemp)
          for(let x in tableTemp){
           self.tableData.push( tableTemp[x])
@@ -527,7 +532,8 @@ export default {
         var startTime=endTime-86400*getCountDays()+1;
         var params={
           startTime:startTime,
-          endTime:endTime
+          endTime:endTime,
+          os:self.os
         }
         self.toexcelTime1=startTime;
         self.toexcelTime2=endTime;
@@ -539,7 +545,7 @@ export default {
         tableTemp=[res.data.data];
         tableTemp=tableTemp[0].list;
         tableTemp2=[res.data.data];
-        self.pageSize=tableTemp2[0].total;
+        self.pageSize=res.data.data.total;
          for(let x in tableTemp){
           self.tableData.push( tableTemp[x])
          }
@@ -562,7 +568,8 @@ export default {
         var startTime=endTime-86400*365+1;
         var params={
           startTime:startTime,
-          endTime:endTime
+          endTime:endTime,
+          os:self.os
         }
         self.toexcelTime1=startTime;
         self.toexcelTime2=endTime;
@@ -574,7 +581,7 @@ export default {
         tableTemp=tableTemp[0].list;
         tableTemp2=[res.data.data];
         //console.log(tableTemp2)
-        self.pageSize=tableTemp2[0].total;
+        self.pageSize=res.data.data.total;
          for(let x in tableTemp){
           self.tableData.push( tableTemp[x])
          /* console.log(tableTemp[x])*/
@@ -605,7 +612,7 @@ export default {
                 var params={
                   startTime:picktime.timestamp1,
                   endTime:picktime.timestamp2,
-
+                  os:self.os
                 }
                 self.toexcelTime1=startTime;
                 self.toexcelTime2=endTime;
@@ -616,7 +623,7 @@ export default {
                   tableTemp=tableTemp[0].list;
                   tableTemp2=[res.data.data];
                  // console.log(tableTemp2)
-                  self.pageSize=tableTemp2[0].total;
+                  self.pageSize=res.data.data.total;
                    for(let x in tableTemp){
                     self.tableData.push( tableTemp[x])
                    /* console.log(tableTemp[x])*/
@@ -658,7 +665,7 @@ export default {
               var params={
                   startTime:picktime.timestamp1,
                   endTime:picktime.timestamp2,
-
+                    os:self.os
                 }
                 self.toexcelTime1=picktime.timestamp1;
                 self.toexcelTime2=picktime.timestamp2;
@@ -669,7 +676,7 @@ export default {
                   tableTemp=tableTemp[0].list;
                   tableTemp2=[res.data.data];
                   //console.log(tableTemp2)
-                  self.pageSize=tableTemp2[0].total;
+                  self.pageSize=res.data.data.total;
                    for(let x in tableTemp){
                     self.tableData.push( tableTemp[x])
                    /* console.log(tableTemp[x])*/
@@ -691,6 +698,242 @@ export default {
           else{
             return;
           }
+      },
+      rechargeTypeSelect:function (type) {
+          var self=this;
+          var val=1;
+          self.os=type;
+          self.currentPage1=1;
+          console.log(val);
+          console.log(this.lvs);
+           if (self.pick1==true&&self.pick2==true) {
+            console.log('pick')
+           var tableTemp2=[]
+           self.tableData=[]
+           var tableTemp=[];
+           function timeChangetype(stringTime1,stringTime2){
+               var time={timestamp1:0,timestamp2:0}
+               time.timestamp1 = Number(Date.parse(stringTime1)/1000);
+               time.timestamp2 = Number(Date.parse(stringTime2)/1000)+86399;
+               return time;
+              }
+              var picktime=timeChangetype(self.formInline.date1,self.formInline.date2);
+              var params={
+                        startTime:picktime.timestamp1,
+                        endTime:picktime.timestamp2,
+                        page:val,
+                        os:type
+
+                  }
+                  self.sTime=picktime.timestamp1;
+                  self.eTime=picktime.timestamp2;
+                  axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
+                              'Content-Type': 'application/x-www-form-urlencoded'
+                        }}).then(function (res) {
+                    tableTemp=[res.data.data];
+                    tableTemp=tableTemp[0].list;
+                    tableTemp2=[res.data.data];
+                   // console.log(tableTemp2)
+                   console.log(res.data.data.total);
+                    self.pageSize=res.data.data.total;
+                     for(let x in tableTemp){
+                      self.tableData.push( tableTemp[x])
+                     /* console.log(tableTemp[x])*/
+                     }
+                   // console.log(self.tableData)
+                  }).catch(function (err) {
+                    console.log(err)
+              })
+           }
+           if (self.lvs>0) {
+            console.log(this.lvs);
+              if (this.lvs==4) {
+                var tableTemp2=[]
+                self.tableData=[]
+                //console.log(self.tableData)
+                var tableTemp=[];
+                var endTime=new Date();
+                endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                var startTime=endTime-86400*365+1;
+                var params={
+                  startTime:startTime,
+                  endTime:endTime,
+                  page:val,
+                  os:type
+                }
+                self.sTime=startTime;
+                self.eTime=endTime;
+                //console.log(endTime);
+                axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                              }}).then(function (res) {
+                tableTemp=[res.data.data];
+                tableTemp=tableTemp[0].list;
+                tableTemp2=[res.data.data];
+                //console.log(tableTemp2)
+                console.log(res.data.data.total);
+                self.pageSize=res.data.data.total;
+                 for(let x in tableTemp){
+                  self.tableData.push( tableTemp[x])
+                 /* console.log(tableTemp[x])*/
+                 }
+                 // console.log(self.tableData)
+
+                }).catch(function (err) {
+                  console.log(err);
+                });
+                return;
+
+              }
+               if (self.lvs==3) {
+                 function getCountDays() {
+                       var curDate = new Date();
+                        /* 获取当前月份 */
+                       var curMonth = curDate.getMonth();
+                      /*  生成实际的月份: 由于curMonth会比实际月份小1, 故需加1 */
+                      curDate.setMonth(curMonth + 1);
+                      curDate.setDate(0);
+                      /* 返回当月的天数 */
+                  return curDate.getDate();
+                }
+                  var tableTemp2=[]
+                  self.tableData=[]
+                  var tableTemp=[];
+                  var endTime=new Date();
+                  endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                  var startTime=endTime-(86400*getCountDays())+1;
+                  console.log(startTime)
+                  var params={
+                    startTime:startTime,
+                    endTime:endTime,
+                    page:val,
+                    os:type
+                  }
+                  self.sTime=startTime;
+                  self.eTime=endTime;
+                  //console.log(endTime-startTime);
+                  //console.log(endTime);
+                  axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
+                                      'Content-Type': 'application/x-www-form-urlencoded'
+                                }}).then(function (res) {
+                  tableTemp=[res.data.data];
+                  tableTemp=tableTemp[0].list;
+                  tableTemp2=[res.data.data];
+                  self.pageSize=res.data.data.total;
+                  console.log(res.data.data.total);
+                   for(let x in tableTemp){
+                    self.tableData.push( tableTemp[x])
+                   }
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
+                  return;
+              }
+                if (self.lvs==2) {
+                  var tableTemp2=[]
+                  self.tableData=[]
+                  var tableTemp2=[]
+                  self.tableData=[]
+                  var tableTemp=[];
+                  var endTime=new Date();
+                  endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                  var startTime=endTime-864000*7+1;
+                  var params={
+                    startTime:startTime,
+                    endTime:endTime,
+                    page:val,
+                    os:self.os
+                  }
+                  self.sTime=startTime;
+                  self.eTime=endTime;
+                  //console.log(endTime);
+                  axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
+                                      'Content-Type': 'application/x-www-form-urlencoded'
+                                }}).then(function (res) {
+                  tableTemp=[res.data.data];
+                  tableTemp=tableTemp[0].list;
+                  tableTemp2=[res.data.data];
+                  self.pageSize=res.data.data.total;
+                  ///console.log(tableTemp)
+                  console.log(res.data.data.total);
+                   for(let x in tableTemp){
+                    self.tableData.push( tableTemp[x])
+                  //  console.log(tableTemp[x])
+                   }
+                  //  console.log(self.tableData)
+
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
+                  return;
+                }
+                else{
+                    console.log('lv1')
+                    var tableTemp2=[]
+                    self.tableData=[]
+                    var tableTemp=[];
+                    var endTime=new Date();
+                    endTime=(Number(endTime.setHours('00', '00', '00', '0'))/1000)-1;
+                    var startTime=endTime-86400+1;
+                    console.log(endTime);
+                    var params={
+                      startTime:startTime,
+                      endTime:endTime,
+                      page:val,
+                      os:type
+                    }
+                    self.sTime=startTime;
+                    self.eTime=endTime;
+                    axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded'
+                                  }}).then(function (res) {
+                    tableTemp=[res.data.data];
+                    tableTemp=tableTemp[0].list;
+                    tableTemp2=[res.data.data];
+                    self.pageSize=res.data.data.total;
+                    console.log(res.data.data.total);
+                    //console.log(tableTemp)
+                     for(let x in tableTemp){
+                      self.tableData.push( tableTemp[x])
+                     // console.log(tableTemp[x])
+                     }
+                      //console.log(self.tableData)
+
+                    }).catch(function (err) {
+                      console.log(err);
+                    })
+                }
+
+           }
+           else{
+             console.log('meidomngxi')
+              self.tableData=[]
+              var tableTemp=[];
+              val=val.toString();
+              var params={
+                page:val,
+                startTime:self.sTime,
+                endTime:self.eTime,
+                os:type
+              }
+              //console.log(typeof(val));
+              axios.post('http://monkey.queyoujia.com/rebate/recharge',qs.stringify(params),{headers: {
+                                  'Content-Type': 'application/x-www-form-urlencoded'
+                            }}).then(function (res) {
+              tableTemp=[res.data.data];
+              tableTemp=tableTemp[0].list;
+                self.pageSize=res.data.data.total;
+           console.log(res)
+           for(let x in tableTemp){
+            self.tableData.push( tableTemp[x])
+           // console.log(tableTemp[x])
+           }
+           // console.log(self.tableData)
+
+          }).catch(function (err) {
+            console.log(err);
+          })
+           }
       }
     },
     computed:{
@@ -717,7 +960,13 @@ export default {
         tableTemp=[res.data.data];
         tableTemp=tableTemp[0].list;
         tableTemp2=[res.data.data];
-        self.pageSize=tableTemp2[0].total;
+        self.pageSize=res.data.data.total;
+        for(var x in res.data.data.os){
+          self.rechargeType.push({
+            value:x,
+            label:res.data.data.os[x]
+          })
+        }
        // console.log(tableTemp)
          for(let x in tableTemp){
           self.tableData.push( tableTemp[x])
@@ -752,13 +1001,13 @@ a {
   color: #42b983;
 }
 .rechargeDetails{margin-top: 10px}
-.searchAll{position: absolute;margin-top: 30px}
+.searchAll{margin-top: 30px}
 .form-inline{padding-bottom:18px; }
 .recharge{margin-top: 10px;}
 .chosedata{float: right;}
 .chosebtn{float: right;}
 .chosebtn button{height: 1.8rem;margin-top: 5px;line-height: 50%;}
-.formSearch{margin-top: -10px;}
+.formSearch{margin-top: 0px;}
 .searchRest{width:60px;height: 36px;margin-left: 10px;}
 .pagetag{/* position: absolute;bottom: 5px;right: 15px; */float: right;}
 .toex{width: 80vw;height: 30vh;position: fixed;top:0;left: 0;bottom: 0;right: 0;margin: auto;z-index: 7}

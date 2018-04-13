@@ -1,5 +1,5 @@
 <template>
-  <div class="login" :key="screen" v-bind:style="{'width':screenWidth,'height':screenHeight}">
+  <div class="login" :key="screen">
      <div class="loginContent">
        <h3 class="loginhead">雀游后台管理系统</h3>
          <!-- <div class="counticon"></div> -->
@@ -277,7 +277,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style >
 .el-checkbox{margin-top: 5px;margin-left: 12.66%;color:#646464;font-family:Microsoft YaHei}
-.login{position: absolute;top: 0;background:#223341/* linear-gradient(to right,#7abedc, #ccecb7); */}
+.login{position: absolute;top: 0;background:#223341;width: 100vw;height: 100vh;overflow: hidden;}
 .loginContent{
   border: 1px solid #253700;
   width:  350px;
