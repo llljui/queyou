@@ -13,7 +13,7 @@
               trigger="click">
                 <el-button size="mini" @click="godaye" v-show="game1">大冶棋牌</el-button>
                 <el-button size="mini" @click="badao"  v-show="game2">八道雀神</el-button>
-                <el-button size="mini" @click="jzsx"  v-show="game3">决战绍兴</el-button>
+                <!-- <el-button size="mini" @click="jzsx"  v-show="game3">决战绍兴</el-button> -->
                 <el-button size="mini" @click="ssshui"  v-show="game4">全民十三水</el-button>
             </el-popover>
             <i class="el-icon-fa el-icon-fa-exchange exchange el-icon-fa-5x" @click="changegame"><span class="changefont" v-popover:popover2>切换游戏</span></i></el-menu-item>
