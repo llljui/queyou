@@ -14,7 +14,7 @@
                 <el-button size="mini" @click="godaye" v-show="game1">大冶棋牌</el-button>
                 <el-button size="mini" @click="badao"  v-show="game2">八道雀神</el-button>
                 <!-- <el-button size="mini" @click="jzsx"  v-show="game3">决战绍兴</el-button> -->
-                <el-button size="mini" @click="ssshui"  v-show="game4">全民十三水</el-button>
+                <!-- <el-button size="mini" @click="ssshui"  v-show="game4">全民十三水</el-button> -->
             </el-popover>
             <i class="el-icon-fa el-icon-fa-exchange exchange el-icon-fa-5x" @click="changegame"><span class="changefont" v-popover:popover2>切换游戏</span></i></el-menu-item>
   <!-- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
@@ -85,18 +85,18 @@ export default {
        window.location.href='http://' + window.location.host+'/html/qyStage/?cid=2&channel=fuyang'+'/#/platformagent';
     },
     jzsx:function () {
-      sessionStorage.cid='3';
-       sessionStorage.channel='default';
-       document.cookie="cid="+'3'+";path=/;";
-       document.cookie="channel="+'default'+";path=/;";
-       window.location.href='http://' + window.location.host+'/html/qyStage/?cid=3&channel=default'+'/#/platformagent';
+      // sessionStorage.cid='3';
+      //  sessionStorage.channel='default';
+      //  document.cookie="cid="+'3'+";path=/;";
+      //  document.cookie="channel="+'default'+";path=/;";
+      //  window.location.href='http://' + window.location.host+'/html/qyStage/?cid=3&channel=default'+'/#/platformagent';
     },
     ssshui:function () {
-      sessionStorage.cid='8';
-       sessionStorage.channel='default';
-       document.cookie="cid="+'8'+";path=/;";
-       document.cookie="channel="+'default'+";path=/;";
-       window.location.href='http://' + window.location.host+'/html/qyStage/?cid=8&channel=default'+'/#/platformagent';
+      // sessionStorage.cid='8';
+      //  sessionStorage.channel='default';
+      //  document.cookie="cid="+'8'+";path=/;";
+      //  document.cookie="channel="+'default'+";path=/;";
+      //  window.location.href='http://' + window.location.host+'/html/qyStage/?cid=8&channel=default'+'/#/platformagent';
     }
   },
   mounted:function () {

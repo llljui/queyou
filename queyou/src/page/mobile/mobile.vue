@@ -8,8 +8,8 @@
       trigger="click"
       content="">
       <el-button size="mini" @click="change_game(1)" v-show="game1">大冶棋牌</el-button>
-      <el-button size="mini" @click="change_game(2)" v-show="game2">八道雀神</el-button>
-      <el-button size="mini" @click="change_game(3)" v-show="game3">全民十三水</el-button>
+      <el-button size="mini" @click="change_game(2)" v-show="game2">八道友乐</el-button>
+      <el-button size="mini" @click="change_game(3)" v-show="game3">绍兴游戏</el-button>
       <el-button size="mini" @click="change_game(99)">切换到PC版</el-button>
     </el-popover>
 
@@ -76,6 +76,16 @@
         </el-tab-pane>
         <el-tab-pane label="推广员授权">
            <el-form ref="form2" :model="form2" label-width="70px" style="margin-top:3vh;">
+             <el-form-item label="所属游戏">
+                  <el-select v-model="form2.value3" placeholder="请选择">
+                    <el-option
+                      v-for="item in options3"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+            </el-form-item>
             <el-form-item label="游戏ID">
               <el-input v-model="form2.uid" @change="checkid_promter"  type="number" placeholder="请输入游戏ID"></el-input>
             </el-form-item>
@@ -118,8 +128,27 @@
           </el-form>
            <el-button type="danger" style="margin:2vh 18vw;" @click="unbind_promter">解除绑定</el-button>
         </el-tab-pane>
-        <el-tab-pane label="实名认证">
-          开发中...
+        <el-tab-pane label="代理转移">
+          <el-form :inline="true" :model="form5">
+            <el-form-item label="转移人的uid">
+              <el-input v-model="form5.uid" @change="ckform5(1)" placeholder="请输入转移人的uid"></el-input>
+            </el-form-item>
+            <el-form-item label="昵称">
+              <el-input v-model="form2.nickname1" placeholder='待检查...'  disabled></el-input>
+            </el-form-item>
+            <el-form-item label="转入代理的uid">
+              <el-input v-model="form5.pid"  @change="ckform5(2)" placeholder="请输入转入代理的uid"></el-input>
+            </el-form-item>
+            <el-form-item label="昵称">
+              <el-input v-model="form2.nickname2" placeholder='待检查...'  disabled></el-input>
+            </el-form-item>
+            <el-form-item label="验证码">
+              <el-input v-model="form5.code"  placeholder="请输入转入代理的验证码"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="dlzy_submit">转移代理</el-button>
+            </el-form-item>
+          </el-form>
         </el-tab-pane>
         <el-tab-pane label="提现记录">
           开发中...
@@ -165,6 +194,7 @@ export default {
   name: 'mobile',
   data () {
      return {
+      form5:{uid:null,pid:null,nickname1:'',nickname2:'',code:''},
       show_hid_2:false,
       code_check_unbind:null,
        options4: [{
@@ -180,24 +210,26 @@ export default {
        value4: '',
        options3: [{
           value: '1',
-          label: '大冶棋牌'
+          label: '决战大冶棋牌'
         }, {
           value: '2',
-          label: '八道雀神'
+          label: '八道友乐'
         }, {
           value: '3',
-          label: '全民十三水'
+          label: '决战绍兴游戏'
         }],
       value3: '',
       form3:{
         uid:null,
         nickname:null
-
+        
       },
       dialogVisible: false,
       form2:{
         nickname:null,
-        uid:null
+        uid:null,
+        cid:null,
+        value3:null
       },
       game1:null,
       game2:null,
@@ -232,6 +264,60 @@ export default {
       };
   },
    methods: {
+     dlzy_submit:function(){
+       var self=this;
+        var params={uid:self.form5.uid,pid:self.form5.pid,code:self.form5.code}
+          axios.post('http://monkey.queyoujia.com/promoter/userchange',qs.stringify(params),{headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                              }}).then(function (res) {
+            if (res.data.code==0) {
+                 self.$message({
+                    message:'转移成功',
+                    type: 'success'
+                  });
+            }else{
+                self.$message({
+                    message:res.data.message,
+                    type: 'warning'
+                  });
+            }
+          }).catch(function (err) {
+            console.log(err);
+        })
+     },
+     ckform5:function(val){
+       var self=this;
+       if (self.form5.uid.length==7||self.form5.pid.length==7) {
+          if (val==1) {
+         var params={uid:self.form5.uid}
+          axios.post('http://monkey.queyoujia.com/user/check',qs.stringify(params),{headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                              }}).then(function (res) {
+            if (res.data.code==0) {
+              self.form5.nickname1=res.data.data.nickname1;
+            }else{
+                self.form5.nickname1=res.data.message;
+            }
+          }).catch(function (err) {
+            console.log(err);
+        })
+       }else{
+          var params={uid:self.form5.pid}
+          axios.post('http://monkey.queyoujia.com/user/check',qs.stringify(params),{headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                              }}).then(function (res) {
+            if (res.data.code==0) {
+              self.form5.nickname2=res.data.data.nickname;
+            }else{
+              self.form5.nickname2=res.data.message;
+            }
+          }).catch(function (err) {
+            console.log(err);
+        })
+       }
+       }
+      
+     },
     ensure_unbind:function () {
       var self=this;
        var params={uid:self.form3.uid,cid:self.value4,channel:self.value3,code:self.code_check_unbind}
@@ -289,7 +375,7 @@ export default {
     },
     promter_:function () {
       var self=this;
-      var params={uid:self.form2.uid,cid:sessionStorage.cid}
+      var params={uid:self.form2.uid,cid:self.form2.value3}
            axios.post('http://monkey.queyoujia.com/promoter/agent',qs.stringify(params),{headers: {
                                   'Content-Type': 'application/x-www-form-urlencoded'
                             }}).then(function (res) {
@@ -303,7 +389,8 @@ export default {
                                     self.$message({
                                         message:res.data.message,
                                         type: 'warning'
-                                      });}
+                                      });
+                                      }
                             }).catch(function (err) {
                               console.log(err);
                             })
